@@ -1,0 +1,36 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+editor_options:
+  chunk_output_type: console
+---
+
+
+
+```{r}
+library(DBI)
+library(glue)
+library(RSQLite)
+
+con <- con <- DBI::dbConnect(RSQLite::SQLite(), 
+                      here::here("data", "stream_flow", "usgs_hydrodata.sqlite"))
+
+
+cyl_int <- c(5406513, 5406574)
+cyl_sql <- glue_sql("{cyl_int*}", .con = con)
+```
+
+
+```{sql, connection=con, output.var="test"}
+SELECT * FROM flows
+  WHERE site_number IN (?cyl_sql)
+  LIMIT 3
+```
+
+
+```{r}
+test
+```
+
