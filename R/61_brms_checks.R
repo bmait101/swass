@@ -20,7 +20,7 @@ int_conditions <- list(latitude_s=c(-1,0.5,1.5))  # set latitudes
 
 # Load model objects ====================================================
 
-source(here::here("R", "50_prep_data.R"))
+source(here::here("R", "30_prep_final.R"))
 df_surveys <- readRDS(here("data", "df_trout_surveys_cln.rds"))
 
 bkt.brm1 <- readRDS(here("output", "models", "brms", "bkt.brm1.rds"))
