@@ -1,2 +1,3 @@
-# swass
-Repo for SWASS MS
+# Seasonal climate and stream salmonids
+
+Code repo for SWASS manuscript. 
