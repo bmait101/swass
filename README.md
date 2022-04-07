@@ -1,6 +1,6 @@
 # Seasonal climate and stream salmonids
 
-![Semantic description of image](/images/brook-trout-464x170.png "Brookie")
+![Semantic description of image](/img/brook-trout-464x170.png "Brookie")
 
 R code accompanying:
 
