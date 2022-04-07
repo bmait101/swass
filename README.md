@@ -1,6 +1,6 @@
 # Seasonal climate and stream salmonids
 
-![alt text](https://github.com/[bmait101]/[swass]/blob/[main]/img/brook-trout-464x170.png?raw=true)
+![Semantic description of image](img/brook-trout-464x170.png)
 
 R code accompanying:
 
