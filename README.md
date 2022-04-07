@@ -4,6 +4,6 @@
 
 R code accompanying:
 
-Maitland, BM & Latka, AL. Shifting climate conditions affect recruitment in Midwestern stream trout, but depend on seasonal and spatial context.Currently under consideration at *Ecological Applications*. 
+[Maitland, BM](https://bryan-m-maitland.netlify.app/) & [Latka, AL](https://dnr.wisconsin.gov/topic/Fishing/people/centraloffice.html). Shifting climate conditions affect recruitment in Midwestern stream trout, but depend on seasonal and spatial context. **Currently under consideration at *Ecological Applications*.**
 
 Materials with be uploaded and archived upon acceptance of manuscript. 
