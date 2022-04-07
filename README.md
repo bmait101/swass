@@ -1,6 +1,6 @@
 # Seasonal climate and stream salmonids
 
-<img align="right" src="img/brook-trout-464x170.png" alt="thylacine" width="300" style="margin-top: 20px">
+![Semantic description of image](img/brook-trout-464x170.png)
 
 R code accompanying:
 
