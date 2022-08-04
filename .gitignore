@@ -8,5 +8,9 @@ data/spatial
 data/tmp
 data/mitro
 
+output/models
+output/figs
+output/tmp
+output/tables
+
 docs
-output
