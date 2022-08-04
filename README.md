@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/476374093.svg)](https://zenodo.org/badge/latestdoi/476374093)
+
 # Seasonal climate and stream salmonids
 
 <img align="right" src="img/brook-trout-464x170.png" alt="brook-trout" width="300" style="margin-top: 20px">
