@@ -15,7 +15,7 @@ authors:
     email: alexander.latzka@wisconsin.gov
     affiliation: Wisconsin Department of Renewable Resources
     orcid: 'https://orcid.org/0000-0002-3969-5714'
-title: "Seasonal weather and stream salmonids"
+title: "Repository for data and scripts accompanying study on seasonal weather and stream salmonids"
 version: 1.0.0-beta
 doi: 10.5281/zenodo.6963918
 date-released: 2022-08-04
