@@ -491,7 +491,7 @@ df_sites_va <- df_sites_va %>%
 
 # Save key added site data =====================================================
 
-write_csv(df_sites_va, here("output","data","sites_list_va.csv"))
+# write_csv(df_sites_va, here("output","data","sites_list_va.csv"))
 write_rds(df_sites_va, here("output","data","sites_list_va.rds"))
 
 
