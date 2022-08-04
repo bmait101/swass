@@ -75,7 +75,7 @@ df_cpes_va %>% filter(is.na(reach_id))
 # Save new objects =========================================================
 
 write_rds(df_cpes_va, here("output","data","df_cpe_va.rds"))
-write_csv(df_cpes_va,  here("output","data","df_cpe_va.csv"))
+# write_csv(df_cpes_va,  here("output","data","df_cpe_va.csv"))
 
 
 
