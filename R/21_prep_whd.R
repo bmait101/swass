@@ -15,7 +15,7 @@ library(here)
 ## Data ----
 
 # whd data from Aaron Rusch (WDNR); also available online
-df_whd <- read_csv(here("data", "whd", "whdplus2.csv")) %>% 
+df_whd <- read_csv(here("data", "whd-plus.csv")) %>% 
   janitor::clean_names() %>% 
   mutate(across(c(reachid), as.character)) 
 
