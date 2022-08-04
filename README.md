@@ -6,5 +6,5 @@ R code accompanying:
 
 [Maitland, BM](https://bryan-m-maitland.netlify.app/) & [Latka, AL](https://dnr.wisconsin.gov/topic/Fishing/people/centraloffice.html). Shifting climate conditions affect recruitment in Midwestern stream trout, but depend on seasonal and spatial context. **Currently under consideration at *Ecological Applications*.**
 
-Materials with be uploaded and archived upon acceptance of manuscript. There are three folders (data, docs, and output) that are being ignored by Git. A compiled and clean dataset will be available via Zenodo shortly. 
+Materials with be archived upon acceptance of manuscript. 
 
