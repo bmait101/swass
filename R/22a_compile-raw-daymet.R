@@ -1,14 +1,14 @@
 # Compile raw DAYMET data for trout analysis
 # Bryan Maitland
 
+## Set up ----
 
 # libraries
 library(tidyverse)
 library(here)
 library(rhdf5)  # R interface for HDF5 files
 
-
-# Initials =====================================================================
+## Data ----
 
 # set path to .h5 file
 f_h5 <- here("data","daymet","daymet_upstream_prcp_tmin_tmax_by_catchid.h5")
@@ -33,11 +33,11 @@ trout_reach_ids <- read_rds(here("output","data","df_cpe_va.rds")) %>%
 taregt_ids <-  filter(dymt_catchids, catchid %in% trout_reach_ids) 
 
 
-# Compile data =================================================================
+## Compile daymet ----
 
 start.time <- Sys.time() # (~ 15 min)
 
-# PRCP-------------------------------------------------------------------
+### PRCP-------------------------------------------------------------------
 
 # read in the prcp data (takes ~ 2 min)
 prcp <- 
@@ -63,7 +63,7 @@ prcp_cln <- prcp %>%
   select(catchid, date, prcp) 
 
 
-# PEFF----------------------------------------------------------
+### PEFF----------------------------------------------------------
 
 # read in the prcp data (takes ~ 3.5 min)
 peff <- 
@@ -89,7 +89,7 @@ peff_cln <- peff %>%
   select(catchid, date, peff) 
 
 
-# TMAX------------------------------------------------------
+### TMAX------------------------------------------------------
 
 
 # read in the prcp data (takes ~3.5 min)
@@ -116,7 +116,7 @@ tmax_cln <- tmax %>%
   select(catchid, date, tmax) 
 
 
-# TMIN---------------------------------------------------------
+### TMIN---------------------------------------------------------
 
 
 # read in the prcp data (takes ~ 3.5 min)
@@ -143,39 +143,30 @@ tmin_cln <- tmin %>%
   select(catchid, date, tmin)
 
 
-# Compile-------------------------------------------------------------------
+## Merge ----
 
-
-dymt_comp <- prcp_cln %>% 
+df_daymet <- prcp_cln %>% 
   left_join(tmin_cln, by = c("catchid", "date")) %>% 
   left_join(tmax_cln, by = c("catchid", "date"))
-dymt_comp
 
+## Clean ----
 
-# write to file
-dymt_comp %>% write_rds(here("data","daymet","daymet_compiled.rds"))
-
-
-# Clean--------------------------------------------------------------------
-
-dymt_cln <- dymt_comp %>% 
-  mutate(date = lubridate::date(date)) %>% 
+df_daymet_cln <- df_daymet %>% 
   mutate(
+    date = lubridate::date(date), 
     tmax = tmax / 10, 
     tmin = tmin / 10, 
     prcp = prcp / 10
     ) %>% 
-  mutate(
-    tmean = (tmax + tmin) / 2
-  ) %>%
+  mutate(tmean = (tmax + tmin) / 2) %>%
   select(catchid, date, tmax, tmin, tmean, prcp)
 
 
-# export to file
-dymt_cln %>% write_rds(here("data","daymet","daymet_cln.rds"))
+## Export ----
+df_daymet_cln %>% write_rds(here("data","daymet","daymet_cln.rds"))
+
 
 end.time <- Sys.time()
 (time.taken <- end.time - start.time)
 
 
-# ================    END    =============================================

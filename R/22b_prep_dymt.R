@@ -1,14 +1,15 @@
-
+#========================================#
 # Compile DAYMET data for trout analysis
-# Bryan Maitland, 
-# 2021-03-10
-# 2021-08-25
+# Dr. Bryan M. Maitland
+# 2022-Aug-03
+#========================================#
 
-# DAYMET data has been processed from RAW in another script
-# and now only contains data for each catchment in the trout dataset
-# from 1990-2020
+# DAYMET data has been processed from RAW in another script (22a_)
+# and now only contains observations for each catchment in the trout dataset
 
 # Here, we make the offsets for recruitment year, and summarize by season
+
+## Set up ----
 
 # libraries
 library(tidyverse)
@@ -16,55 +17,19 @@ library(lubridate)
 library(here)
 
 
-# Data ================================================================
+## Data ----
 
-df_daymet <- read_rds(here("data","daymet","daymet_cln.rds"))
-
-# Recruitment year offsets ============================================
-
-# First test it out:
-# df_daymet %>%
-#   # subset for testing
-#   slice_head(n=5000) %>% select(-tmax, -tmin, -tmean) %>%
-#   # add year and month columns
-#   mutate(
-#     year = lubridate::year(date),
-#     month = lubridate::month(date),
-#   ) %>%
-#   relocate(c(year, month), .after = date) %>%
-#   # get rid of the early dates
-#   filter(date >= "1990-05-01") %>%
-#   # now keep only the first day of each month to test
-#   group_by(year, month) %>%
-#   slice_head(n=1) %>%
-#   ungroup() %>% 
-#   # add year lags for appropriate months
-#   mutate(
-#     year_yoy = case_when(
-#       month %in% c(6,7,8,9,10,11,12) ~ year + 1,
-#       TRUE ~ year
-#     )) %>%
-#   mutate(
-#     season = case_when(
-#       month %in% c(6,7,8) ~ "summer",
-#       month %in% c(9,10,11) ~ "autumn",
-#       month %in% c(12,1,2) ~ "winter",
-#       month %in% c(3,4,5) ~ "spring")
-#     ) %>%
-#   # pull out one year to check
-#   filter(year_yoy=="2000") %>% 
-#   print(n=Inf)
+df_daymet_cln <- read_rds(here("data","daymet","daymet_cln.rds"))
 
 
-# Now in full:
-df_daymet <- df_daymet %>%
-  # get year and month
+## Recruit year offsets ----
+
+df_daymet_offset <- df_daymet_cln %>%
   mutate(
     year = lubridate::year(date),
     month = lubridate::month(date), 
   ) %>% 
-  # new year column that puts jun-dec data in following year to link to yoy 
-  # i.e., add year lags for appropriate months
+  # add year lags for appropriate months
   mutate(
     year_yoy = case_when(
       month %in% c(6,7,8,9,10,11,12) ~ year + 1,
@@ -83,23 +48,22 @@ df_daymet <- df_daymet %>%
   relocate(year_yoy, .after=year)
 
 
-# Calculate seasonal metrics =========================
 
-# Summarize total precip and mean max temp by yoy-year, season, and catchment
-df_daymet_covars <- df_daymet %>%
+## Seasonal metrics ----
+
+### Calculate ----
+df_daymet_seasonal <- df_daymet_offset %>%
   group_by(year_yoy, season, catchid) %>%
   summarise(
-    total.prcp     = sum(prcp),  
-    mean.tmax      = mean(tmax),   # mean 90-day max temp
+    total.prcp = sum(prcp),  
+    mean.tmax  = mean(tmax),
     .groups = "drop") %>% 
-  rename(
-    year = year_yoy,
-    reach_id = catchid
-    ) %>% 
+  rename(year = year_yoy, reach_id = catchid) %>% 
   mutate(reach_id =  as.character(reach_id))
 
-# Wrangle 
-df_daymet_covars_w <- df_daymet_covars %>% 
+# Make wide df
+df_daymet_seasonal_w <- 
+  df_daymet_seasonal %>% 
   pivot_longer(
     -c(year, reach_id, season), 
     names_to = "covar", 
@@ -111,13 +75,42 @@ df_daymet_covars_w <- df_daymet_covars %>%
     values_from = c("value")
     ) 
 
+### Standardize ----
+
 # Mean-variance (z) standardize the covariates
-df_daymet_covars_s <- df_daymet_covars_w %>% 
-  mutate(across(3:ncol(df_daymet_covars_w), ~(scale(.) %>% as.vector))) 
+df_daymet_seasonal_w_std <- df_daymet_seasonal_w %>% 
+  mutate(across(3:ncol(df_daymet_seasonal_w), ~(scale(.) %>% as.vector))) 
 
 
-# Save intermediaries
-write_rds(df_daymet_covars, here("output","data","df_covar_dmt.rds"))
-write_rds(df_daymet_covars_std, here("output","data","df_covar_dmt_std.rds"))
+## Save ----
 
+write_rds(df_daymet_seasonal, here("output","data","daymet_seasonal.rds"))
+write_rds(df_daymet_seasonal_w, here("output","data","daymet_seasonal_w.rds"))
+write_rds(df_daymet_seasonal_w_std, here("output","data","daymet_seasonal_w_std.rds"))
+
+
+## Long-term metrics ----
+
+### Calculate ----
+df_daymet_longterm <- df_daymet_offset %>%
+  group_by(catchid) %>%
+  summarise(
+    lt_mean.daily.prcp = mean(prcp),  
+    lt_mean.daily.tmean  = mean(tmean),
+    .groups = "drop") %>% 
+  rename(reach_id = catchid) %>% 
+  mutate(reach_id =  as.character(reach_id))
+
+
+### Standardize ----
+
+# Mean-variance (z) standardize the covariates
+df_daymet_longterm_std <- df_daymet_longterm %>% 
+  mutate(across(2:3, ~(scale(.) %>% as.vector))) 
+
+
+## Save objects ----
+
+write_rds(df_daymet_longterm, here("output","data","daymet_longterm.rds"))
+write_rds(df_daymet_longterm_std, here("output","data","ddaymet_longterm_std.rds"))
 

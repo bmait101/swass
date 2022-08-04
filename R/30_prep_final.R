@@ -1,101 +1,100 @@
+#========================================#
+# Linking covariates to trout trend data & Prepare dataset for analysis
+# Dr. Bryan M. Maitland
+# 2022-Aug-03
+#========================================#
 
-# Prep datasets for analyses
+## Set up ----
 
+# Libraries
 library(tidyverse)
 library(here)
 
-# Data =========================================================================
 
-df_drivers <- readRDS(here("output","data", "df_drivers.rds"))
-# df_surveys <- readRDS(here("output", "data", "df_surveys.rds"))
+## Data ----
+
+df_cpes_va <- readRDS(here("output","data","df_cpe_va.rds"))
+df_whd_cln_slct_std <- readRDS(here("output","data","whd_cln_slct_std.rds"))
+df_daymet_seasonal_w_std <- readRDS(here("output","data","daymet_seasonal_w_std.rds"))
+df_daymet_longterm_std <- readRDS(here("output","data","daymet_longterm_std.rds"))
 
 
-# Wrangle ======================================================================
+## Join datasets ----
 
-# Calculate number of yr-observation for each stream reach and group
-yr_obs <- df_drivers %>%
+# Merge
+df_drivers <- df_cpes_va |> 
+  rename(year = survey.year) |>  
+  left_join(df_whd_cln_slct_std, by = c("reach_id")) |> 
+  left_join(df_daymet_seasonal_w_std, by = c("reach_id", "year")) |> 
+  left_join(df_daymet_longterm_std, by = c("reach_id"))
+
+# Add factors
+df_drivers <- df_drivers |>
+  mutate(across(where(is.character), as.factor)) |> 
+  mutate(
+    year_f = factor(year), # year as a factor for ranef
+    year_s = scale(year)[,1],  
+    latitude_s = scale(latitude)[,1]
+  ) |> 
+  relocate(c(year_f, year_s), .after=year)
+
+# Calculate yr-observation
+tmp <- df_drivers %>%
   distinct(year, reach_id, species, yoy) %>%
   group_by(reach_id, species, yoy) %>%
   summarise(yr_obs = n()) %>%
   ungroup()
 
-# add yr_obs to data
 df_drivers <- df_drivers %>%
-  left_join(yr_obs, by = c("reach_id", "species", "yoy")) %>%
+  left_join(tmp, by = c("reach_id", "species", "yoy")) %>%
   relocate(yr_obs, .before=year)
-rm(yr_obs)
 
-# rename and add factors
-df_drivers <- df_drivers %>%
-  rename(size_class = yoy) %>% 
-  mutate(size_class = if_else(size_class=="N","adult","yoy")) %>% 
-  mutate(across(where(is.character), as.factor))
+rm(tmp)
 
-# # List of survey purposes to keep for analysis
-# targs.survey.purpose.cpe <- c(
-#   "fisheries_assessments_trout_trend",
-#   "fisheries_assessments_trout_rotation",
-#   "fisheries_assessments_trout_potential",
-#   "fisheries_assessments_rivers",
-#   "baseline_monitoring",
-#   "comprehensive_survey",
-#   "general_survey",
-#   "natural_community_reference",
-#   "targeted_watershed_assessment",
-#   "watershed_comprehensive_sites",
-#   "watershed_long_term_reference_site_monitoring"
-# )
+## Export dataset ----
+
+df_drivers %>% write_rds(here("output","data", "df_drivers.rds"))
 
 
 
-# Filter data ============================================================
+## Prep for analysis -------------------
 
-new.dat <- df_drivers %>%
-  # filter(primary.survey.purpose %in% targs.survey.purpose.cpe)  %>%
-  filter(yr_obs >= 5)
+### Filter >5 yr-obs ----
+df_analysis <- df_drivers %>% filter(yr_obs >= 5)
 
-# new.dat %>%
-#   group_by(species,trout_class) %>%
-#   count()
 
-# Remove NAs
-# map(new.dat, ~sum(is.na(.)))
-new.dat <- new.dat %>% 
+### Missing data ----
+
+map(df_analysis, ~sum(is.na(.)))
+df_analysis <- df_analysis %>% 
   filter(!is.na(total.prcp_summer)) %>% 
   filter(!is.na(total.prcp_autumn)) %>% 
   filter(!is.na(total.prcp_winter)) %>% 
   filter(!is.na(total.prcp_spring))
-  
-# new.dat %>% group_by(species,size_class) %>% count()
-# 
-# new.dat %>% distinct(survey.seq.no)
-# new.dat %>% distinct(visit.fish.seq.no)
-# new.dat %>% distinct(site.seq.no)
-# new.dat %>% distinct(reach_id)
+map(df_analysis, ~sum(is.na(.)))
 
 
-# new.dat <- new.dat %>%
-#   filter(trout_class %in% c("CLASS I","CLASS II"))
+### Tidy ----
+df_analysis <- df_analysis %>%
+  rename(size_class = yoy) %>% 
+  mutate(size_class = if_else(size_class=="N","adult","yoy")) %>% 
+  mutate(across(where(is.character), as.factor))
 
 
-# Subset data for analysis ================================================
+### Subsets ----
 
 # YOY Brook trout
-df_trends_bkt0 <- new.dat %>% 
-  filter(species == "brook_trout", size_class=="yoy") %>%
-  droplevels()
+df_analysis_bkt0 <- df_analysis %>% 
+  filter(species == "brook_trout", size_class=="yoy") %>% droplevels()
 
 # Adult brook trout
-df_trends_bkt1 <- new.dat %>% 
-  filter(species == "brook_trout", size_class=="adult") %>% 
-  droplevels()
+df_analysis_bkt1 <- df_analysis %>% 
+  filter(species == "brook_trout", size_class=="adult") %>% droplevels()
 
 # YOY brown trout
-df_trends_bnt0 <- new.dat %>%
-  filter(species == "brown_trout", size_class=="yoy") %>% 
-  droplevels()
+df_analysis_bnt0 <- df_analysis %>%
+  filter(species == "brown_trout", size_class=="yoy") %>% droplevels()
 
 # Adult brown trout
-df_trends_bnt1 <- new.dat %>%
-  filter(species == "brown_trout", size_class=="adult")  %>% 
-  droplevels()
+df_analysis_bnt1 <- df_analysis %>%
+  filter(species == "brown_trout", size_class=="adult")  %>% droplevels()

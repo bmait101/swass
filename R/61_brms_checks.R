@@ -20,44 +20,47 @@ int_conditions <- list(latitude_s=c(-1,0.5,1.5))  # set latitudes
 
 # Load model objects ====================================================
 
-source(here::here("R", "30_prep_final.R"))
-df_surveys <- readRDS(here("data", "df_trout_surveys_cln.rds"))
+# source(here::here("R", "30_prep_final.R"))
+# df_surveys <- readRDS(here("data", "df_trout_surveys_cln.rds"))
 
 bkt.brm1 <- readRDS(here("output", "models", "brms", "bkt.brm1.rds"))
 bkt.brm2 <- readRDS(here("output", "models", "brms", "bkt.brm2.rds"))
 bkt.brm3 <- readRDS(here("output", "models", "brms", "bkt.brm3.rds"))
-bkt.brm3.c1 <- readRDS(here("output", "models", "brms", "bkt.brm3_12.rds"))
+# bkt.brm3.c1 <- readRDS(here("output", "models", "brms", "bkt.brm3_12.rds"))
 bkt.brm4 <- readRDS(here("output", "models", "brms", "bkt.brm4.rds"))
 
 bnt.brm1 <- readRDS(here("output", "models", "brms", "bnt.brm1.rds"))
 bnt.brm2 <- readRDS(here("output", "models", "brms", "bnt.brm2.rds"))
 bnt.brm3 <- readRDS(here("output", "models", "brms", "bnt.brm3.rds"))
-bnt.brm3.c1 <- readRDS(here("output", "models", "brms", "bnt.brm3_12.rds"))
+# bnt.brm3.c1 <- readRDS(here("output", "models", "brms", "bnt.brm3_12.rds"))
 bnt.brm4 <- readRDS(here("output", "models", "brms", "bnt.brm4.rds"))
 
-
-bkt.mod <- bkt.brm4
-bnt.mod <- bnt.brm4
-
-vars <- get_variables(bkt.mod)[c(2:11)]
-vars2 <- get_variables(bnt.mod)[c(15:24)]
-
-# Brook trout =============================================================
-
-# bkt.brm0 <- add_criterion(bkt.brm0, "waic")
+## LOO compare ----
 bkt.brm1 <- add_criterion(bkt.brm1, c("waic","loo"))
 bkt.brm2 <- add_criterion(bkt.brm2, c("waic","loo"))
 bkt.brm3 <- add_criterion(bkt.brm3, c("waic","loo"))
+bkt.brm3a <- add_criterion(bkt.brm3a, c("waic","loo"))
 bkt.brm4 <- add_criterion(bkt.brm4, c("waic","loo"))
-bkt.brm5 <- add_criterion(bkt.brm5, c("waic","loo"))
-bkt.brm6 <- add_criterion(bkt.brm6, c("waic","loo"))
+loo_compare(bkt.brm1,bkt.brm2,bkt.brm3,bkt.brm3a,bkt.brm4, criterion = "waic")
 
-loo_compare(bkt.brm1, bkt.brm2, bkt.brm3, bkt.brm2a, bkt.brm4,
-            criterion = "waic")
+bnt.brm1 <- add_criterion(bnt.brm1, c("waic","loo"))
+bnt.brm2 <- add_criterion(bnt.brm2, c("waic","loo"))
+bnt.brm3 <- add_criterion(bnt.brm3, c("waic","loo"))
+bnt.brm3a <- add_criterion(bnt.brm3a, c("waic","loo"))
+bnt.brm4 <- add_criterion(bnt.brm4, c("waic","loo"))
+loo_compare(bnt.brm1,bnt.brm2,bnt.brm3,bnt.brm3a,bnt.brm4, criterion = "waic")
 
-loo_compare(bkt.brm1, bkt.brm2, bkt.brm3, bkt.brm4, bkt.brm5, bkt.brm6,
-            criterion = "loo")
 
+# Best fit models
+bkt.mod <- bkt.brm4
+bnt.mod <- bnt.brm4
+
+# Pull variables for best fit models
+vars <- get_variables(bkt.mod)[c(2:11)]
+vars2 <- get_variables(bnt.mod)[c(15:24)]
+
+
+# Brook trout =============================================================
 
 # Summarize best fit
 bkt.mod
@@ -107,6 +110,8 @@ coefplot(bkt.mod, level=0.95, grouping = "reach_id",
 conditional_effects(bkt.mod, conditions = conditions)
 conditional_smooths(bkt.mod)
 conditional_effects(bkt.mod, conditions = conditions, 
+                    effects = "stream_order")
+conditional_effects(bkt.mod, conditions = conditions, 
                     effects = "mean.tmax_summer")
 conditional_effects(bkt.mod, conditions = conditions, 
                     effects = "mean.tmax_summer")
@@ -153,19 +158,6 @@ conditional_effects(bkt.mod, conditions = conditions,
 
 
 # Brown trout =============================================================
-
-# Compare models
-bnt.brm1 <- add_criterion(bnt.brm1, c("waic","loo"))
-bnt.brm2 <- add_criterion(bnt.brm2, c("waic","loo"))
-bnt.brm3 <- add_criterion(bnt.brm3, c("waic","loo"))
-bnt.brm3a <- add_criterion(bnt.brm3a, c("waic","loo"))
-bnt.brm4 <- add_criterion(bnt.brm4, c("waic","loo"))
-
-loo_compare(bnt.brm1, bnt.brm2, bnt.brm3,
-            criterion = "waic")
-
-loo_compare(bnt.brm1, bnt.brm2, bnt.brm3, 
-            criterion = "loo")
 
 # Summarize best fit
 bnt.mod

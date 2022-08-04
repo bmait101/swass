@@ -1,54 +1,55 @@
-
-
-# Drivers of trout relative abundance analysis
-# Bryan Maitland
+#===========================================#
+# Drivers of trout relative abundance
+# Dr. Bryan M. Maitland
+# 2022-Aug-03
 
 # Goal: build Bayesian hierarchical models to quantify relationship between 
 # change in trout population size and covariates
+#===========================================#
 
+## Set up ----
 
 # libraries
 library(brms)
 
-# help Stan run faster
+# global options
 rstan::rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
 
-# Data =========================================================================
+## Data ----
 
-source(here::here("R", "50_prep_data.R"))
+source(here::here("R", "30_prep_final.R"))
 
-# Clean up dfs for brms anlaysis
+## Clean up for brms analysis
 
-temp.dat.bkt <- df_trends_bkt0 %>% 
+temp.dat.bkt <- df_analysis_bkt0 |> 
   # filter(huc_names8 %in% c(
   # "Kickapoo", "Lower St. Croix", "Rush-Vermillion","Black","Coon-Yellow")) %>%
-  # filter(trout_class %in% c("CLASS I","CLASS II")) %>% 
   select(
     year_s, species, total_catch, total_effort, reach_id, huc_names8,
     total.prcp_spring, total.prcp_winter,
     total.prcp_summer, total.prcp_autumn,
     mean.tmax_spring, mean.tmax_winter, mean.tmax_autumn, mean.tmax_summer,
-    stream_order, gradient, latitude_s
+    stream_order, gradient, latitude_s, 
+    lt_mean.daily.prcp, lt_mean.daily.tmean
   )
 
-temp.dat.bnt <- df_trends_bnt0 %>% 
+temp.dat.bnt <- df_analysis_bnt0 |> 
   # filter(huc_names8 %in% c(
   # "Kickapoo", "Lower St. Croix", "Rush-Vermillion","Black","Coon-Yellow")) %>%
-  # filter(trout_class %in% c("CLASS I","CLASS II")) %>% 
   select(
     year_s, species, total_catch, total_effort, reach_id, huc_names8,
     total.prcp_spring, total.prcp_winter,
     total.prcp_summer, total.prcp_autumn,
     mean.tmax_spring, mean.tmax_winter, mean.tmax_autumn, mean.tmax_summer,
-    stream_order, gradient, latitude_s
+    stream_order, gradient, latitude_s, 
+    lt_mean.daily.prcp, lt_mean.daily.tmean
   )
 
 
 # brook trout ==================================================================
 
-
-# glmer with random stream intercepts: 15 min
+# glmer with random stream intercepts / slopes: 15 min 
 bkt.brm1 <- brm(total_catch | rate(total_effort) ~  
                   mean.tmax_summer + (0 + mean.tmax_summer | reach_id) +
                   mean.tmax_autumn + (0 + mean.tmax_autumn | reach_id) +
@@ -73,7 +74,7 @@ bkt.brm1 <- brm(total_catch | rate(total_effort) ~
 saveRDS(bkt.brm1, here("output", "models", "brms", "bkt.brm1.rds"))
 
 
-# add interactions
+# no random slopes
 bkt.brm2 <- brm(total_catch | rate(total_effort) ~  
                   mean.tmax_summer +
                   mean.tmax_autumn +
@@ -96,7 +97,7 @@ bkt.brm2 <- brm(total_catch | rate(total_effort) ~
 saveRDS(bkt.brm2a, here("output", "models", "brms", "bkt.brm2a.rds"))
 
 
-# add interactions
+# no random slopes and no quadratics
 bkt.brm2a <- brm(total_catch | rate(total_effort) ~  
                   mean.tmax_summer +
                   mean.tmax_autumn +
@@ -119,7 +120,7 @@ bkt.brm2a <- brm(total_catch | rate(total_effort) ~
 saveRDS(bkt.brm2a, here("output", "models", "brms", "bkt.brm2.rds"))
 
 
-# interactions
+# add interactions
 bkt.brm3 <- brm(total_catch | rate(total_effort) ~  
                   mean.tmax_summer + 
                   mean.tmax_autumn +
@@ -152,7 +153,41 @@ bkt.brm3 <- brm(total_catch | rate(total_effort) ~
 saveRDS(bkt.brm3, here("output", "models", "brms", "bkt.brm3.rds"))
 
 
-# bump it up
+# add interactions and long-term averages
+bkt.brm3a <- brm(total_catch | rate(total_effort) ~  
+                  mean.tmax_summer + 
+                  mean.tmax_autumn +
+                  mean.tmax_winter + 
+                  mean.tmax_spring + I(mean.tmax_spring^2) +
+                  total.prcp_summer +
+                  total.prcp_autumn + 
+                  total.prcp_winter +
+                  total.prcp_spring + I(total.prcp_spring^2) +
+                  stream_order + gradient + latitude_s + 
+                  lt_mean.daily.prcp + lt_mean.daily.tmean +
+                  
+                  mean.tmax_summer:latitude_s + 
+                  mean.tmax_autumn:latitude_s + 
+                  mean.tmax_winter:latitude_s +
+                  (mean.tmax_spring + I(mean.tmax_spring^2)):latitude_s +
+                  total.prcp_summer:latitude_s +
+                  total.prcp_autumn:latitude_s + 
+                  total.prcp_winter:latitude_s + 
+                  (total.prcp_spring + I(total.prcp_spring^2)):latitude_s +
+                  
+                  (1 | reach_id) + 
+                  s(year_s),
+                iter = 1000, warmup = 500, 
+                chains = 2, thin = 1,
+                data   = temp.dat.bkt,
+                family = negbinomial(),
+                control = list(adapt_delta = 0.99)
+)
+
+saveRDS(bkt.brm3a, here("output", "models", "brms", "bkt.brm3a.rds"))
+
+
+# full model run
 bkt.brm4 <- brm(total_catch | rate(total_effort) ~  
                   mean.tmax_summer + 
                   mean.tmax_autumn +
@@ -196,8 +231,8 @@ saveRDS(bkt.brm4, here("output", "models", "brms", "bkt.brm4.rds"))
 
 # brown trout --------------------------------------------------------
 
-system.time(
-  bnt.brm0 <- brm(total_catch | rate(total_effort) ~  
+# glmer with random stream intercepts / slopes: 15 min 
+bnt.brm0 <- brm(total_catch | rate(total_effort) ~  
                     total.prcp_summer + (0 + total.prcp_summer | reach_id) +
                     total.prcp_autumn + (0 + total.prcp_autumn | reach_id) +
                     total.prcp_winter + (0 + total.prcp_winter | reach_id) + 
@@ -213,9 +248,8 @@ system.time(
                   data   = temp.dat.bnt,
                   family = negbinomial()
   )
-)
 
-
+# no random slopes
 bnt.brm1 <- brm(total_catch | rate(total_effort) ~
                   mean.tmax_summer +
                   mean.tmax_autumn +
@@ -236,7 +270,7 @@ bnt.brm1 <- brm(total_catch | rate(total_effort) ~
 )
 saveRDS(bnt.brm1, here("output", "models", "brms", "bnt.brm1.rds"))
 
-
+# quadratics
 bnt.brm2 <- brm(total_catch | rate(total_effort) ~  
                   mean.tmax_summer + I(mean.tmax_summer^2) +
                   mean.tmax_autumn +
@@ -258,6 +292,7 @@ bnt.brm2 <- brm(total_catch | rate(total_effort) ~
 saveRDS(bnt.brm2, here("output", "models", "brms", "bnt.brm2.rds"))
 
 
+# add interactions
 bnt.brm3 <- brm(total_catch | rate(total_effort) ~  
                   mean.tmax_summer +
                   mean.tmax_autumn +
@@ -297,8 +332,40 @@ bnt.brm3 <- brm(total_catch | rate(total_effort) ~
 saveRDS(bnt.brm3, here("output", "models", "brms", "bnt.brm3.rds"))
 
 
+# add interactions and long-term averages
+bnt.brm3a <- brm(total_catch | rate(total_effort) ~  
+                   mean.tmax_summer + 
+                   mean.tmax_autumn +
+                   mean.tmax_winter + 
+                   mean.tmax_spring + I(mean.tmax_spring^2) +
+                   total.prcp_summer +
+                   total.prcp_autumn + 
+                   total.prcp_winter +
+                   total.prcp_spring + I(total.prcp_spring^2) +
+                   stream_order + gradient + latitude_s + 
+                   lt_mean.daily.prcp + lt_mean.daily.tmean +
+                   
+                   mean.tmax_summer:latitude_s + 
+                   mean.tmax_autumn:latitude_s + 
+                   mean.tmax_winter:latitude_s +
+                   (mean.tmax_spring + I(mean.tmax_spring^2)):latitude_s +
+                   total.prcp_summer:latitude_s +
+                   total.prcp_autumn:latitude_s + 
+                   total.prcp_winter:latitude_s + 
+                   (total.prcp_spring + I(total.prcp_spring^2)):latitude_s +
+                   
+                   (1 | reach_id) + 
+                   s(year_s),
+                 iter = 1000, warmup = 500, 
+                 chains = 2, thin = 1,
+                 data   = temp.dat.bnt,
+                 family = negbinomial(),
+                 control = list(adapt_delta = 0.99)
+)
 
-# bump it up
+saveRDS(bnt.brm3a, here("output", "models", "brms", "bnt.brm3a.rds"))
+
+# full model
 bnt.brm4 <- brm(total_catch | rate(total_effort) ~  
                   mean.tmax_summer + 
                   mean.tmax_autumn +

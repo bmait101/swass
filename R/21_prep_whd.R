@@ -1,60 +1,95 @@
+#========================================#
+# Compile WDNR 24k WHD Plus data 
+# Dr. Bryan M. Maitland
+# 2022-Aug-03
+#========================================#
 
+
+## Set up ----
+
+# libraries
 library(tidyverse)
+library(lubridate)
 library(here)
-library(janitor)
 
-# Data ============================================
+## Data ----
 
-df_cpes_va <- read_rds(here("output","data","df_cpe_va.rds"))
-
-# load 24K VA hydro
-whdplus <- read_csv(here("data", "whd", "whdplus2.csv")) %>% 
+# whd data from Aaron Rusch (WDNR); also available online
+df_whd <- read_csv(here("data", "whd", "whdplus2.csv")) %>% 
   janitor::clean_names() %>% 
   mutate(across(c(reachid), as.character)) 
 
-# Check for missing WHDPlus data ============================
 
-length(unique(df_cpes_va$reach_id)) - length(unique(whdplus$reachid))
 
-anti_join(df_cpes_va, whdplus, by = c("reach_id" = "reachid"))
-# 24 records
-# 3 reach ids missing from WHD data
-# only two records are marginally important - so we'll call this done. 
+### Check missing data -----
 
-# Prep data ======================================
+# # load cpe to get unique reach ids
+# df_cpes_va <- read_rds(here("output","data","df_cpe_va.rds"))
+# 
+# # return all rows from CPE without a match in WHD.
+# df_cpes_va |> anti_join(df_whd, by = c("reach_id" = "reachid"))
+# # 24 records
+# 
+# # how many stream reaches?
+# df_cpes_va |> 
+#   anti_join(df_whd, by = c("reach_id" = "reachid")) |> 
+#   distinct(reach_id)
+# # 3 reaches missing from WHD data
 
-# select columns
-df_whdplus_covars <- whdplus %>% 
-  mutate(trw_lu11_forests = trw_lu11_41+trw_lu11_42+trw_lu11_43) %>% 
-  mutate(trw_lu11_wetland = trw_lu11_90+trw_lu11_95) %>% 
-  mutate(trw_lu11_ag = trw_lu11_81+trw_lu11_82) %>% 
+
+## Clean ----
+
+# combine LU categories
+df_whd_cln <- df_whd |> 
+  mutate(trw_lu11_forests = trw_lu11_41+trw_lu11_42+trw_lu11_43) |> 
+  mutate(trw_lu11_wetland = trw_lu11_90+trw_lu11_95) |> 
+  mutate(trw_lu11_ag = trw_lu11_81+trw_lu11_82) |> 
   select(-trw_lu11_41, -trw_lu11_42, -trw_lu11_43, -trw_lu11_90, -trw_lu11_95, 
-         -trw_lu11_81, -trw_lu11_82) %>% 
+         -trw_lu11_81, -trw_lu11_82)
+
+# check variable names
+names(df_whd_cln)
+
+## select variables ----
+
+df_whd_cln_slct <- df_whd_cln %>% 
   select(
     reach_id = reachid, 
-    # w_area, 
-    # w_slope,
+    # c_lat,
     stream_order, 
-    gradient,
-    trw_reachlen, 
-    trw_lu11_forests, 
-    trw_lu11_wetland,
-    trw_lu11_ag
+    gradient
+    # trw_reachlen, 
+    # trw_lu11_forests, 
+    # trw_lu11_wetland,
+    # trw_lu11_ag
     )
 
-names(df_whdplus_covars)
+### Correlations ----
 
-# plot hostorgrams of all the covariates
-df_whdplus_covars %>% 
+names(df_whd_cln_slct)
+tmp <- df_whd_cln_slct %>% select(2:ncol(df_whd_cln_slct)) 
+tmp <- cor(tmp, use='pairwise.complete.obs')
+corrplot::corrplot.mixed(tmp, upper='ellipse', tl.pos='lt')
+
+### Histograms ----
+df_whd_cln_slct %>% 
   pivot_longer(-reach_id, names_to="var", values_to="value") %>% 
   ggplot(aes(value)) +
   geom_histogram() + 
   facet_wrap(vars(var), scales = 'free')
 
 
-# Mean-variance (z) standardize the covariates
-df_whdplus_covars_std <- df_whdplus_covars %>% 
-  mutate(across(2:ncol(df_whdplus_covars), ~(scale(.) %>% as.vector)))
+## Standardize ----
 
-write_rds(df_whdplus_covars, here("output","data","df_covar_whd.rds"))
-write_rds(df_whdplus_covars_std, here("output","data","df_covar_whd_std.rds"))
+# Mean-variance (z) standardize the covariates
+df_whd_cln_slct_std <- df_whd_cln_slct %>% 
+  mutate(across(2:ncol(df_whd_cln_slct), ~(scale(.) %>% as.vector)))
+
+
+## Export ----
+write_rds(df_whd_cln_slct, here("output","data","whd_cln_slct.rds"))
+write_rds(df_whd_cln_slct_std, here("output","data","whd_cln_slct_std.rds"))
+
+
+
+
