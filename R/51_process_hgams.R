@@ -7,6 +7,7 @@
 
 library(tidyverse)
 library(gratia)
+library(here)
 # library(ragg)
 library(patchwork)
 
@@ -20,29 +21,29 @@ aic.compare <- function(...)
 
 # Data =========================================================================
 
-source(here::here("R", "50_prep_data.R"))
+source(here::here("R", "30_prep_final.R"))
 
 
 # Load model objects ===========================================================
 
 bkt0.m1 <- readRDS(here("output", "models", "trends", "bkt0.m1.rds"))
 bkt0.m2 <- readRDS(here("output", "models", "trends", "bkt0.m2.rds"))
-bkt0.m3 <- readRDS(here("output", "models", "trends", "bkt0.m3_12.rds"))
+bkt0.m3 <- readRDS(here("output", "models", "trends", "bkt0.m3.rds"))
 bkt0.m4 <- readRDS(here("output", "models", "trends", "bkt0.m4.rds"))
 bkt0.m5 <- readRDS(here("output", "models", "trends", "bkt0.m5.rds"))
-bkt0.m3.y2y <- readRDS(here("output", "models", "trends", "bkt0.m3.y2y_12.rds"))
+bkt0.m3.y2y <- readRDS(here("output", "models", "trends", "bkt0.m3.y2y.rds"))
 
 
 bkt1.m1 <- readRDS(here("output", "models", "trends", "bkt1.m1.rds"))
 bkt1.m2 <- readRDS(here("output", "models", "trends", "bkt1.m2.rds"))
-bkt1.m3 <- readRDS(here("output", "models", "trends", "bkt1.m3_12.rds"))
+bkt1.m3 <- readRDS(here("output", "models", "trends", "bkt1.m3.rds"))
 bkt1.m4 <- readRDS(here("output", "models", "trends", "bkt1.m4.rds"))
 bkt1.m5 <- readRDS(here("output", "models", "trends", "bkt1.m5.rds"))
-bkt1.m3.y2y <- readRDS(here("output", "models", "trends", "bkt1.m3.y2y_12.rds"))
+bkt1.m3.y2y <- readRDS(here("output", "models", "trends", "bkt1.m3.y2y.rds"))
 
 bnt0.m1 <- readRDS(here("output", "models", "trends", "bnt0.m1.rds"))
 bnt0.m2 <- readRDS(here("output", "models", "trends", "bnt0.m2.rds"))
-bnt0.m3 <- readRDS(here("output", "models", "trends", "bnt0.m3_12.rds"))
+bnt0.m3 <- readRDS(here("output", "models", "trends", "bnt0.m3.rds"))
 bnt0.m4 <- readRDS(here("output", "models", "trends", "bnt0.m4.rds"))
 bnt0.m5 <- readRDS(here("output", "models", "trends", "bnt0.m5.rds"))
 bnt0.m3.y2y <- readRDS(here("output", "models", "trends", "bnt0.m3.y2y.rds"))
@@ -54,7 +55,7 @@ bnt1.m3 <- readRDS(here("output", "models", "trends", "bnt1.m3.rds"))
 bnt1.m4 <- readRDS(here("output", "models", "trends", "bnt1.m4.rds"))
 bnt1.m5 <- readRDS(here("output", "models", "trends", "bnt1.m5.rds"))
 bnt1.m3.y2y <- readRDS(here("output", "models", "trends", "bnt1.m3.y2y.rds"))
-bnt1.m3 <- readRDS(here("output", "models", "trends", "bnt1.m3_cl1.rds"))
+bnt1.m3 <- readRDS(here("output", "models", "trends", "bnt1.m3.rds"))
 
 
 # Quick AIC model comparison for all groups =======================================
@@ -131,10 +132,10 @@ ggplot(deriv.bkt0.y2y, aes(x = data, y = derivative)) +
 
 # New data
 pred.bkt0 <- expand_grid(
-  year = seq(min(df_trends_bkt0$year), max(df_trends_bkt0$year), 
+  year = seq(min(df_analysis_bkt0$year), max(df_analysis_bkt0$year), 
              length.out = 300), 
   total_effort = 1, 
-  reach_id = levels(df_trends_bkt0$reach_id)[[1]]
+  reach_id = levels(df_analysis_bkt0$reach_id)[[1]]
   )
 
 # Predict
@@ -165,10 +166,10 @@ p.bkt0.trend <- pred.bkt0 %>%
 ## State-wide with y2y
 
 # New data
-pred.bkt0.y2y <- with(df_trends_bkt0, tibble(
+pred.bkt0.y2y <- with(df_analysis_bkt0, tibble(
   year = seq(min(year), max(year), length.out = 200), 
   total_effort = 1, 
-  reach_id = levels(df_trends_bkt0$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bkt0$reach_id)[[1]], 
   year_f = 2010
 ))
 
@@ -191,10 +192,10 @@ pred.bkt0.y2y <- pred.bkt0.y2y %>%
 
 # New data
 pred.bkt0.re <- expand_grid(
-  year = seq(min(df_trends_bkt0$year), max(df_trends_bkt0$year), 
+  year = seq(min(df_analysis_bkt0$year), max(df_analysis_bkt0$year), 
              length.out = 50), 
   total_effort = 1, 
-  reach_id = levels(df_trends_bkt0$reach_id)
+  reach_id = levels(df_analysis_bkt0$reach_id)
 )
 
 # Predict
@@ -228,7 +229,7 @@ hucs <- c("Namekagon","Bad-Montreal","Beartrap-Nemadji")
 
 # Plot
 pred.bkt0.re %>% 
-  left_join(df_trends_bkt0 %>% distinct(huc_names8, reach_id), 
+  left_join(df_analysis_bkt0 %>% distinct(huc_names8, reach_id), 
             by = "reach_id") %>% 
   filter(huc_names8 %in% hucs) %>% 
   ggplot(aes(x = year, y = exp(fit), group = reach_id, 
@@ -239,7 +240,7 @@ pred.bkt0.re %>%
   facet_wrap(~reach_id, scales = 'free_y') +
   scale_x_continuous(breaks = seq(1995,2020,5), limits = c(1994, 2020))  + 
   # coord_cartesian(ylim = c(0, 1000)) +
-  geom_point(data = df_trends_bkt0 %>% filter(huc_names8 %in% hucs), 
+  geom_point(data = df_analysis_bkt0 %>% filter(huc_names8 %in% hucs), 
              aes(year, cpe, color = huc_names8))
 
 
@@ -305,10 +306,10 @@ ggplot(deriv.bkt1.y2y, aes(x = data, y = derivative)) +
 
 # New data
 pred.bkt1 <- expand_grid(
-  year = seq(min(df_trends_bkt1$year), max(df_trends_bkt1$year), 
+  year = seq(min(df_analysis_bkt1$year), max(df_analysis_bkt1$year), 
              length.out = 300), 
   total_effort = 1, 
-  reach_id = levels(df_trends_bkt1$reach_id)[[1]]
+  reach_id = levels(df_analysis_bkt1$reach_id)[[1]]
 )
 
 # Predict
@@ -340,10 +341,10 @@ p.bkt1.trend <- pred.bkt1 %>%
 ## State-wide with y2y
 
 # New data
-pred.bkt1.y2y <- with(df_trends_bkt1, tibble(
+pred.bkt1.y2y <- with(df_analysis_bkt1, tibble(
   year = seq(min(year), max(year), length.out = 200), 
   total_effort = 1, 
-  reach_id = levels(df_trends_bkt1$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bkt1$reach_id)[[1]], 
   year_f = 2010
 ))
 
@@ -369,10 +370,10 @@ pred.bkt1.y2y <- pred.bkt1.y2y %>%
 
 # New data
 pred.bkt1.re <- expand_grid(
-  year = seq(min(df_trends_bkt1$year), max(df_trends_bkt1$year), 
+  year = seq(min(df_analysis_bkt1$year), max(df_analysis_bkt1$year), 
              length.out = 50), 
   total_effort = 1, 
-  reach_id = levels(df_trends_bkt1$reach_id)
+  reach_id = levels(df_analysis_bkt1$reach_id)
 )
 
 # Predict
@@ -406,7 +407,7 @@ hucs <- c("Namekagon","Bad-Montreal","Beartrap-Nemadji")
 
 # Plot
 pred.bkt1.re %>% 
-  left_join(df_trends_bkt1 %>% distinct(huc_names8, reach_id), 
+  left_join(df_analysis_bkt1 %>% distinct(huc_names8, reach_id), 
             by = "reach_id") %>% 
   filter(huc_names8 %in% hucs) %>% 
   ggplot(aes(x = year, y = exp(fit), group = reach_id, 
@@ -417,7 +418,7 @@ pred.bkt1.re %>%
   facet_wrap(~reach_id, scales = 'free_y') +
   scale_x_continuous(breaks = seq(1995,2020,5), limits = c(1994, 2020))  + 
   # coord_cartesian(ylim = c(0, 1000)) +
-  geom_point(data = df_trends_bkt1 %>% filter(huc_names8 %in% hucs), 
+  geom_point(data = df_analysis_bkt1 %>% filter(huc_names8 %in% hucs), 
              aes(year, cpe, color = huc_names8))
 
 
@@ -425,10 +426,10 @@ pred.bkt1.re %>%
 
 # New data
 pred.bkt1.re <- expand_grid(
-  year = seq(min(df_trends_bkt1$year), max(df_trends_bkt1$year), 
+  year = seq(min(df_analysis_bkt1$year), max(df_analysis_bkt1$year), 
              length.out = 50), 
   total_effort = 1, 
-  reach_id = levels(df_trends_bkt1$reach_id)[[1]],
+  reach_id = levels(df_analysis_bkt1$reach_id)[[1]],
   huc_names8 = "Kickapoo"
 )
 
@@ -457,7 +458,7 @@ pred.bkt1.re %>%
               alpha = 0.2, inherit.aes = FALSE, fill = "grey60") +
   geom_line()  + 
   coord_cartesian(ylim = c(0, 2000)) +
-  geom_point(data = df_trends_bkt1 %>% filter(huc_names8 %in% c("Kickapoo")), 
+  geom_point(data = df_analysis_bkt1 %>% filter(huc_names8 %in% c("Kickapoo")), 
              aes(year, cpe, color = huc_names8))
 
 
@@ -518,10 +519,10 @@ ggplot(deriv.bnt0.y2y, aes(x = data, y = derivative)) +
 
 # New data
 pred.bnt0 <- expand_grid(
-  year = seq(min(df_trends_bnt0$year), max(df_trends_bnt0$year), 
+  year = seq(min(df_analysis_bnt0$year), max(df_analysis_bnt0$year), 
              length.out = 300), 
   total_effort = 1, 
-  reach_id = levels(df_trends_bnt0$reach_id)[[1]]
+  reach_id = levels(df_analysis_bnt0$reach_id)[[1]]
 )
 
 # Predict
@@ -553,10 +554,10 @@ p.bkt0.trend <- pred.bnt0 %>%
 ## State-wide with y2y
 
 # New data
-pred.bnt0.y2y <- with(df_trends_bnt0, tibble(
+pred.bnt0.y2y <- with(df_analysis_bnt0, tibble(
   year = seq(min(year), max(year), length.out = 200), 
   total_effort = 1, 
-  reach_id = levels(df_trends_bnt0$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bnt0$reach_id)[[1]], 
   year_f = 2010
 ))
 
@@ -578,10 +579,10 @@ pred.bnt0.y2y <- pred.bnt0.y2y %>%
 
 # New data
 pred.bnt0.re <- expand_grid(
-  year = seq(min(df_trends_bnt0$year), max(df_trends_bnt0$year), 
+  year = seq(min(df_analysis_bnt0$year), max(df_analysis_bnt0$year), 
              length.out = 50), 
   total_effort = 1, 
-  reach_id = levels(df_trends_bnt0$reach_id)
+  reach_id = levels(df_analysis_bnt0$reach_id)
 )
 
 # Predict
@@ -615,7 +616,7 @@ hucs <- c("Namekagon","Bad-Montreal","Beartrap-Nemadji")
 
 # Plot
 pred.bnt0.re %>% 
-  left_join(df_trends_bnt0 %>% distinct(huc_names8, reach_id), 
+  left_join(df_analysis_bnt0 %>% distinct(huc_names8, reach_id), 
             by = "reach_id") %>% 
   filter(huc_names8 %in% hucs) %>% 
   ggplot(aes(x = year, y = exp(fit), group = reach_id, 
@@ -626,7 +627,7 @@ pred.bnt0.re %>%
   facet_wrap(~reach_id, scales = 'free_y') +
   scale_x_continuous(breaks = seq(1995,2020,5), limits = c(1994, 2020))  + 
   # coord_cartesian(ylim = c(0, 1000)) +
-  geom_point(data = df_trends_bnt0 %>% filter(huc_names8 %in% hucs), 
+  geom_point(data = df_analysis_bnt0 %>% filter(huc_names8 %in% hucs), 
              aes(year, cpe, color = huc_names8))
 
 
@@ -700,10 +701,10 @@ ggplot(deriv.bnt1.y2y, aes(x = data, y = derivative)) +
 
 # New data
 pred.bnt1 <- expand_grid(
-  year = seq(min(df_trends_bnt1$year), max(df_trends_bnt1$year), 
+  year = seq(min(df_analysis_bnt1$year), max(df_analysis_bnt1$year), 
              length.out = 300), 
   total_effort = 1, 
-  reach_id = levels(df_trends_bnt1$reach_id)[[1]]
+  reach_id = levels(df_analysis_bnt1$reach_id)[[1]]
 )
 
 # Predict
@@ -735,10 +736,10 @@ p.bkt0.trend <- pred.bnt1 %>%
 ## State-wide with y2y
 
 # New data
-pred.bnt1.y2y <- with(df_trends_bnt1, tibble(
+pred.bnt1.y2y <- with(df_analysis_bnt1, tibble(
   year = seq(min(year), max(year), length.out = 200), 
   total_effort = 1, 
-  reach_id = levels(df_trends_bnt1$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bnt1$reach_id)[[1]], 
   year_f = 2010
 ))
 
@@ -760,10 +761,10 @@ pred.bnt1.y2y <- pred.bnt1.y2y %>%
 
 # New data
 pred.bnt1.re <- expand_grid(
-  year = seq(min(df_trends_bnt1$year), max(df_trends_bnt1$year), 
+  year = seq(min(df_analysis_bnt1$year), max(df_analysis_bnt1$year), 
              length.out = 50), 
   total_effort = 1, 
-  reach_id = levels(df_trends_bnt1$reach_id)
+  reach_id = levels(df_analysis_bnt1$reach_id)
 )
 
 # Predict
@@ -797,7 +798,7 @@ hucs <- c("Namekagon","Bad-Montreal","Beartrap-Nemadji")
 
 # Plot
 pred.bnt1.re %>% 
-  left_join(df_trends_bnt1 %>% distinct(huc_names8, reach_id), 
+  left_join(df_analysis_bnt1 %>% distinct(huc_names8, reach_id), 
             by = "reach_id") %>% 
   filter(huc_names8 %in% hucs) %>% 
   ggplot(aes(x = year, y = exp(fit), group = reach_id, 
@@ -808,7 +809,7 @@ pred.bnt1.re %>%
   facet_wrap(~reach_id, scales = 'free_y') +
   scale_x_continuous(breaks = seq(1995,2020,5), limits = c(1994, 2020))  + 
   # coord_cartesian(ylim = c(0, 1000)) +
-  geom_point(data = df_trends_bnt1 %>% filter(huc_names8 %in% hucs), 
+  geom_point(data = df_analysis_bnt1 %>% filter(huc_names8 %in% hucs), 
              aes(year, cpe, color = huc_names8))
 
 

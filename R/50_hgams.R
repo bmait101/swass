@@ -10,24 +10,24 @@ ctrl <- gam.control(nthreads = 4)
 
 # Data =========================================================================
 
-source(here::here("R", "50_prep_data.R"))
+source(here::here("R", "30_prep_final.R"))
 
-# df_trends_bkt0 <- df_trends_bkt0 %>% 
+# df_analysis_bkt0 <- df_analysis_bkt0 %>% 
 #   filter(trout_class %in% c("CLASS I","CLASS II")) %>%
 #   droplevels()
 # 
 # # Adult brook trout
-# df_trends_bkt1 <- df_trends_bkt1 %>% 
+# df_analysis_bnk1 <- df_analysis_bnk1 %>% 
 #   filter(trout_class %in% c("CLASS I","CLASS II")) %>% 
 #   droplevels()
 # 
 # # YOY brown trout
-# df_trends_bnt0 <- df_trends_bnt0 %>%
+# df_analysis_bnt0 <- df_analysis_bnt0 %>%
 #   filter(trout_class %in% c("CLASS I","CLASS II")) %>% 
 #   droplevels()
 # 
 # # Adult brown trout
-# df_trends_bnt1 <- df_trends_bnt1 %>%
+# df_analysis_bnt1 <- df_analysis_bnt1 %>%
 #   filter(trout_class %in% c("CLASS I","CLASS II"))  %>% 
 #   droplevels()
 
@@ -39,7 +39,7 @@ system.time(
                    s(year, k=15) + 
                    s(reach_id, bs = "re") + 
                    offset(log(total_effort)), 
-                 data = df_trends_bkt0,
+                 data = df_analysis_bkt0,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -52,7 +52,7 @@ system.time(
   bkt0.m2 <- gam(total_catch ~
                    s(year, reach_id, bs = "fs", k = 5) + 
                    offset(log(total_effort)),
-                 data = df_trends_bkt0,
+                 data = df_analysis_bkt0,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -68,7 +68,7 @@ system.time(
                    s(year, k=15) + 
                    s(year, reach_id, bs = "fs", k = 5) + 
                    offset(log(total_effort)),
-                 data = df_trends_bkt0,
+                 data = df_analysis_bkt0,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -83,7 +83,7 @@ system.time(
                    s(year, by = huc_names8) +
                    s(reach_id, bs = "re") +
                    offset(log(total_effort)),
-                 data = df_trends_bkt0,
+                 data = df_analysis_bkt0,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -97,7 +97,7 @@ system.time(
                    s(year, by = huc_names8) +
                    s(year, reach_id, bs = "fs", k = 5) +
                    offset(log(total_effort)),
-                 data = df_trends_bkt0,
+                 data = df_analysis_bkt0,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -113,7 +113,7 @@ system.time(
                    s(year, reach_id, bs = "fs", k = 5) + 
                    s(year_f, bs = "re") + 
                    offset(log(total_effort)),
-                 data = df_trends_bkt0,
+                 data = df_analysis_bkt0,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -144,7 +144,7 @@ system.time(
                   family = nb(),
                   method = "REML",
                   control = ctrl,
-                  data = df_trends_bkt0)
+                  data = df_analysis_bkt0)
 )
 
 saveRDS(bkt0.cov, here("output", "models", "trends", "bkt0.cov.rds"))
@@ -170,7 +170,7 @@ system.time(
                   family = nb(),
                   method = "REML",
                   control = ctrl,
-                  data = df_trends_bkt0)
+                  data = df_analysis_bkt0)
 )
 
 saveRDS(bkt0.covy, here("output", "models", "trends", "bkt0.covy.rds"))
@@ -201,7 +201,7 @@ system.time(
                 family = nb(),
                 method = "REML",
                 control = ctrl,
-                data = df_trends_bkt0)
+                data = df_analysis_bkt0)
 )
 
 saveRDS(bkt0.cov2, here("output", "models", "trends", "bkt0.cov2.rds"))
@@ -232,7 +232,7 @@ system.time(
                    family = nb(),
                    method = "REML",
                    control = ctrl,
-                   data = df_trends_bkt0)
+                   data = df_analysis_bkt0)
 )
 
 saveRDS(bkt0.cov3, here("output", "models", "trends", "bkt0.cov3.rds"))
@@ -248,7 +248,7 @@ system.time(
                    s(year, k=15) + 
                    s(reach_id, bs = "re") + 
                    offset(log(total_effort)), 
-                 data = df_trends_bkt1,
+                 data = df_analysis_bnk1,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -260,7 +260,7 @@ system.time(
   bkt1.m2 <- gam(total_catch ~
                    s(year, reach_id, bs = "fs", k = 5) + 
                    offset(log(total_effort)),
-                 data = df_trends_bkt1,
+                 data = df_analysis_bnk1,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -273,7 +273,7 @@ system.time(
                    s(year, k=15) + 
                    s(year, reach_id, bs = "fs", k = 5) + 
                    offset(log(total_effort)),
-                 data = df_trends_bkt1,
+                 data = df_analysis_bnk1,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -287,7 +287,7 @@ system.time(
                    s(year, by = huc_names8) +
                    s(reach_id, bs = "re") +
                    offset(log(total_effort)),
-                 data = df_trends_bkt1,
+                 data = df_analysis_bnk1,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -300,7 +300,7 @@ system.time(
                    s(year, by = huc_names8) +
                    s(year, reach_id, bs = "fs", k = 5) +
                    offset(log(total_effort)),
-                 data = df_trends_bkt1,
+                 data = df_analysis_bnk1,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -316,7 +316,7 @@ system.time(
                    s(year, reach_id, bs = "fs", k = 5) + 
                    s(year_f, bs = "re") +  
                    offset(log(total_effort)),
-                 data = df_trends_bkt1,
+                 data = df_analysis_bnk1,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -334,7 +334,7 @@ system.time(
                    s(year, k=15) + 
                    s(reach_id, bs = "re") + 
                    offset(log(total_effort)), 
-                 data = df_trends_bnt0,
+                 data = df_analysis_bnt0,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -347,7 +347,7 @@ system.time(
   bnt0.m2 <- gam(total_catch ~
                    s(year, reach_id, bs = "fs", k = 5) + 
                    offset(log(total_effort)),
-                 data = df_trends_bnt0,
+                 data = df_analysis_bnt0,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -361,7 +361,7 @@ system.time(
                    s(year, k=15) + 
                    s(year, reach_id, bs = "fs", k = 5) + 
                    offset(log(total_effort)),
-                 data = df_trends_bnt0,
+                 data = df_analysis_bnt0,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -376,7 +376,7 @@ system.time(
                    s(year, by = huc_names8) +
                    s(reach_id, bs = "re") +
                    offset(log(total_effort)),
-                 data = df_trends_bnt0,
+                 data = df_analysis_bnt0,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -390,7 +390,7 @@ system.time(
                    s(year, by = huc_names8) +
                    s(year, reach_id, bs = "fs", k = 5) +
                    offset(log(total_effort)),
-                 data = df_trends_bnt0,
+                 data = df_analysis_bnt0,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -406,7 +406,7 @@ system.time(
                    s(year, reach_id, bs = "fs", k = 5) + 
                    s(year_f, bs = "re") +  
                    offset(log(total_effort)),
-                 data = df_trends_bnt0,
+                 data = df_analysis_bnt0,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -437,7 +437,7 @@ saveRDS(bnt0.m3.y2y, here("output", "models", "trends", "bnt0.m3.y2y.rds"))
 #                family = nb(),
 #                method = "REML",
 #                control = ctrl,
-#                data = df_trends_bnt0)
+#                data = df_analysis_bnt0)
 # )
 # 
 # 
@@ -465,7 +465,7 @@ saveRDS(bnt0.m3.y2y, here("output", "models", "trends", "bnt0.m3.y2y.rds"))
 #                   family = nb(),
 #                   method = "REML",
 #                   control = ctrl,
-#                   data = df_trends_bnt0)
+#                   data = df_analysis_bnt0)
 # )
 # 
 # saveRDS(bnt0.covy, here("output", "models", "trends", "bnt0.covy.rds"))
@@ -497,7 +497,7 @@ system.time(
                 family = nb(),
                 method = "REML",
                 control = ctrl,
-                data = df_trends_bnt0)
+                data = df_analysis_bnt0)
 )
 
 
@@ -529,7 +529,7 @@ system.time(
                   family = nb(),
                   method = "REML",
                   control = ctrl,
-                  data = df_trends_bnt0)
+                  data = df_analysis_bnt0)
 )
 
 
@@ -561,7 +561,7 @@ saveRDS(bnt0.cov3, here("output", "models", "trends", "bnt0.cov3.rds"))
 #                    family = nb(),
 #                    method = "REML",
 #                    control = ctrl,
-#                    data = df_trends_bnt0)
+#                    data = df_analysis_bnt0)
 # )
 # 
 # 
@@ -591,7 +591,7 @@ saveRDS(bnt0.cov3, here("output", "models", "trends", "bnt0.cov3.rds"))
 #                   family = nb(),
 #                   method = "REML",
 #                   control = ctrl,
-#                   data = df_trends_bnt0)
+#                   data = df_analysis_bnt0)
 # )
 # 
 # 
@@ -627,7 +627,7 @@ saveRDS(bnt0.cov3, here("output", "models", "trends", "bnt0.cov3.rds"))
 #                    family = nb(),
 #                    method = "REML",
 #                    control = ctrl,
-#                    data = df_trends_bkt0)
+#                    data = df_analysis_bkt0)
 # )
 # 
 # saveRDS(bnt0.cov5, here("output", "models", "trends", "bnt0.cov5.rds"))
@@ -640,7 +640,7 @@ system.time(
                    s(year, k=15) + 
                    s(reach_id, bs = "re") + 
                    offset(log(total_effort)), 
-                 data = df_trends_bnt1,
+                 data = df_analysis_bnt1,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -653,7 +653,7 @@ system.time(
   bnt1.m2 <- gam(total_catch ~
                    s(year, reach_id, bs = "fs", k = 5) + 
                    offset(log(total_effort)),
-                 data = df_trends_bnt1,
+                 data = df_analysis_bnt1,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -667,7 +667,7 @@ system.time(
                    s(year, k=15) + 
                    s(year, reach_id, bs = "fs", k = 5) + 
                    offset(log(total_effort)),
-                 data = df_trends_bnt1,
+                 data = df_analysis_bnt1,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -682,7 +682,7 @@ system.time(
                    s(year, by = huc_names8) +
                    s(reach_id, bs = "re") +
                    offset(log(total_effort)),
-                 data = df_trends_bnt1,
+                 data = df_analysis_bnt1,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -695,7 +695,7 @@ system.time(
                    s(year, by = huc_names8) +
                    s(year, reach_id, bs = "fs", k = 5) +
                    offset(log(total_effort)),
-                 data = df_trends_bnt1,
+                 data = df_analysis_bnt1,
                  method = "REML",
                  family = nb(),
                  control = ctrl)
@@ -710,7 +710,7 @@ system.time(
                    s(year, reach_id, bs = "fs", k = 5) + 
                    s(year_f, bs = "re") + 
                    offset(log(total_effort)),
-                 data = df_trends_bnt1,
+                 data = df_analysis_bnt1,
                  method = "REML",
                  family = nb(),
                  control = ctrl)

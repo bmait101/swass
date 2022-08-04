@@ -94,7 +94,7 @@ bkt.brm2 <- brm(total_catch | rate(total_effort) ~
                 family = negbinomial(),
                 control = list(adapt_delta = 0.99)
 )
-saveRDS(bkt.brm2a, here("output", "models", "brms", "bkt.brm2a.rds"))
+saveRDS(bkt.brm2, here("output", "models", "brms", "bkt.brm2.rds"))
 
 
 # no random slopes and no quadratics
@@ -118,6 +118,29 @@ bkt.brm2a <- brm(total_catch | rate(total_effort) ~
                 control = list(adapt_delta = 0.99)
 )
 saveRDS(bkt.brm2a, here("output", "models", "brms", "bkt.brm2.rds"))
+
+# no random slopes and additional vars
+bkt.brm2b <- brm(total_catch | rate(total_effort) ~  
+                  mean.tmax_summer +
+                  mean.tmax_autumn +
+                  mean.tmax_winter + 
+                  mean.tmax_spring + I(mean.tmax_spring^2) +
+                  total.prcp_summer +
+                  total.prcp_autumn + 
+                  total.prcp_winter +
+                  total.prcp_spring + I(total.prcp_spring^2) +
+                  (1 | reach_id) +
+                  
+                  stream_order + gradient + latitude_s + 
+                  lt_mean.daily.prcp + lt_mean.daily.tmean +
+                  s(year_s),
+                iter = 1000, warmup = 500, 
+                chains = 2, thin = 1,
+                data   = temp.dat.bkt,
+                family = negbinomial(),
+                control = list(adapt_delta = 0.99)
+)
+saveRDS(bkt.brm2b, here("output", "models", "brms", "bkt.brm2b.rds"))
 
 
 # add interactions

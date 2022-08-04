@@ -25,7 +25,9 @@ int_conditions <- list(latitude_s=c(-1,0.5,1.5))  # set latitudes
 
 bkt.brm1 <- readRDS(here("output", "models", "brms", "bkt.brm1.rds"))
 bkt.brm2 <- readRDS(here("output", "models", "brms", "bkt.brm2.rds"))
+bkt.brm2a <- readRDS(here("output", "models", "brms", "bkt.brm2a.rds"))
 bkt.brm3 <- readRDS(here("output", "models", "brms", "bkt.brm3.rds"))
+bkt.brm3a <- readRDS(here("output", "models", "brms", "bkt.brm3a.rds"))
 # bkt.brm3.c1 <- readRDS(here("output", "models", "brms", "bkt.brm3_12.rds"))
 bkt.brm4 <- readRDS(here("output", "models", "brms", "bkt.brm4.rds"))
 
@@ -38,10 +40,11 @@ bnt.brm4 <- readRDS(here("output", "models", "brms", "bnt.brm4.rds"))
 ## LOO compare ----
 bkt.brm1 <- add_criterion(bkt.brm1, c("waic","loo"))
 bkt.brm2 <- add_criterion(bkt.brm2, c("waic","loo"))
+bkt.brm2a <- add_criterion(bkt.brm2a, c("waic","loo"))
 bkt.brm3 <- add_criterion(bkt.brm3, c("waic","loo"))
 bkt.brm3a <- add_criterion(bkt.brm3a, c("waic","loo"))
 bkt.brm4 <- add_criterion(bkt.brm4, c("waic","loo"))
-loo_compare(bkt.brm1,bkt.brm2,bkt.brm3,bkt.brm3a,bkt.brm4, criterion = "waic")
+loo_compare(bkt.brm1,bkt.brm2,bkt.brm2a,bkt.brm3,bkt.brm3a,bkt.brm4, criterion = "waic")
 
 bnt.brm1 <- add_criterion(bnt.brm1, c("waic","loo"))
 bnt.brm2 <- add_criterion(bnt.brm2, c("waic","loo"))

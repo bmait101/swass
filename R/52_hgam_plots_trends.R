@@ -30,10 +30,10 @@ p.data <- bind_rows(
     group = factor(group, levels = c("a","b","c","d")))
 
 plot_titles <- c(
-  `a` = "(a) Brook Trout, without year random effects",
-  `b` = "(b) Brown Trout, without year random effects",
-  `c` = "(c) Brook Trout, with year random effects",
-  `d` = "(d) Brown Trout, with year random effects"
+  `a` = "(a) Brook trout, without year random effects",
+  `b` = "(b) Brown trout, without year random effects",
+  `c` = "(c) Brook trout, with year random effects",
+  `d` = "(d) Brown trout, with year random effects"
 )
 
 
@@ -47,7 +47,7 @@ p.pred.trends <- p.data %>%
     vars(group), nrow = 2, scales="free", 
     labeller = as_labeller(plot_titles)) +
   scale_x_continuous(breaks = seq(1995,2020,5), limits = c(1994, 2020))+ 
-  # scale_y_continuous(limits = c(0,410)) + 
+  scale_y_continuous(limits = c(0,410)) +
   scale_linetype_manual(values = c("solid", "solid")) + 
   scale_color_manual(values = c("forestgreen", "black")) +
   scale_fill_manual(values = c("forestgreen", "grey80")) +
@@ -55,7 +55,7 @@ p.pred.trends <- p.data %>%
   # scale_fill_manual(values = c("#D8B365", "#5AB4AC")) +
   labs(
     x = "Year",
-    y = expression(Relative~density~(fish~mile^{-1}))
+    y = expression(Relative~abundance~(fish~mile^{-1}))
     ) + 
   theme_minimal(base_family = "sans", base_size = 12) +
   theme(
@@ -75,9 +75,18 @@ p.pred.trends <- p.data %>%
   ) 
 p.pred.trends
 
-# 
-# ggsave(here("output","figs","trend_prep_panel.png"), p.pred.trends, 
+
+# ggsave(here("output","figs","trend_prep_panel.png"), p.pred.trends,
 #        device=ragg::agg_png, res=300, height = 6, width = 9)
-# ggsave(here("output","figs","trend_prep_panel.pdf"), p.pred.trends, 
+# ggsave(here("output","figs","trend_prep_panel.pdf"), p.pred.trends,
 #        device=cairo_pdf, height = 6, width = 9)
+
+
+path <- here::here("output", "figs", "fig2_trend_panel_R1")
+ggsave(glue::glue("{path}.pdf"), plot = p.pred.trends, 
+       width = 9, height = 6, device = cairo_pdf)
+# pdftools::pdf_convert(pdf = glue::glue("{path}.pdf"),
+#                       filenames = glue::glue("{path}.png"),
+#                       format = "png", dpi = 300)
+
 
