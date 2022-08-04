@@ -55,8 +55,8 @@ loo_compare(bnt.brm1,bnt.brm2,bnt.brm3,bnt.brm3a,bnt.brm4, criterion = "waic")
 
 
 # Best fit models
-bkt.mod <- bkt.brm4
-bnt.mod <- bnt.brm4
+bkt.mod <- bkt.brm3a
+bnt.mod <- bnt.brm3a
 
 # Pull variables for best fit models
 vars <- get_variables(bkt.mod)[c(2:11)]

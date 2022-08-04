@@ -10,6 +10,7 @@
 ## Set up ----
 
 # libraries
+library(tidyverse)
 library(brms)
 
 # global options
@@ -189,14 +190,14 @@ bkt.brm3a <- brm(total_catch | rate(total_effort) ~
                   stream_order + gradient + latitude_s + 
                   lt_mean.daily.prcp + lt_mean.daily.tmean +
                   
-                  mean.tmax_summer:latitude_s + 
-                  mean.tmax_autumn:latitude_s + 
-                  mean.tmax_winter:latitude_s +
-                  (mean.tmax_spring + I(mean.tmax_spring^2)):latitude_s +
-                  total.prcp_summer:latitude_s +
-                  total.prcp_autumn:latitude_s + 
-                  total.prcp_winter:latitude_s + 
-                  (total.prcp_spring + I(total.prcp_spring^2)):latitude_s +
+                  mean.tmax_summer:lt_mean.daily.tmean + 
+                  mean.tmax_autumn:lt_mean.daily.tmean + 
+                  mean.tmax_winter:lt_mean.daily.tmean +
+                  (mean.tmax_spring + I(mean.tmax_spring^2)):lt_mean.daily.tmean +
+                  total.prcp_summer:lt_mean.daily.tmean +
+                  total.prcp_autumn:lt_mean.daily.tmean + 
+                  total.prcp_winter:lt_mean.daily.tmean + 
+                  (total.prcp_spring + I(total.prcp_spring^2)):lt_mean.daily.tmean +
                   
                   (1 | reach_id) + 
                   s(year_s),
@@ -387,6 +388,41 @@ bnt.brm3a <- brm(total_catch | rate(total_effort) ~
 )
 
 saveRDS(bnt.brm3a, here("output", "models", "brms", "bnt.brm3a.rds"))
+
+
+# add interactions and long-term averages
+bnt.brm3a <- brm(total_catch | rate(total_effort) ~  
+                   mean.tmax_summer + 
+                   mean.tmax_autumn +
+                   mean.tmax_winter + 
+                   mean.tmax_spring + I(mean.tmax_spring^2) +
+                   total.prcp_summer +
+                   total.prcp_autumn + 
+                   total.prcp_winter +
+                   total.prcp_spring + I(total.prcp_spring^2) +
+                   stream_order + gradient + latitude_s + 
+                   lt_mean.daily.prcp + lt_mean.daily.tmean +
+                   
+                   mean.tmax_summer:lt_mean.daily.tmean + 
+                   mean.tmax_autumn:lt_mean.daily.tmean + 
+                   mean.tmax_winter:lt_mean.daily.tmean +
+                   (mean.tmax_spring + I(mean.tmax_spring^2)):lt_mean.daily.tmean +
+                   total.prcp_summer:lt_mean.daily.tmean +
+                   total.prcp_autumn:lt_mean.daily.tmean + 
+                   total.prcp_winter:lt_mean.daily.tmean + 
+                   (total.prcp_spring + I(total.prcp_spring^2)):lt_mean.daily.tmean +
+                   
+                   (1 | reach_id) + 
+                   s(year_s),
+                 iter = 1000, warmup = 500, 
+                 chains = 2, thin = 1,
+                 data   = temp.dat.bnt,
+                 family = negbinomial(),
+                 control = list(adapt_delta = 0.99)
+)
+
+saveRDS(bnt.brm3a, here("output", "models", "brms", "bnt.brm3a.rds"))
+
 
 # full model
 bnt.brm4 <- brm(total_catch | rate(total_effort) ~  
