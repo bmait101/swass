@@ -76,9 +76,9 @@ df_efforts_raw <- df_efforts_raw %>%
 
 # save
 saveRDS(df_surveys_raw, here("data", "raw_fmdb_surveys_20220330.rds"))
-saveRDS(df_efforts_raw, here("data", "raw_fmdb_efforts_20220330.rds"))
+saveRDS(df_efforts_raw, here("data", "raw_fmdb_efforts_20210919.rds"))
 
-# df_surveys_raw <- read_rds(here("data", "raw_fmdb_surveys_20210919.rds"))
+# df_surveys_raw <- read_rds(here("data", "raw_fmdb_surveys_20220330.rds"))
 # df_efforts_raw <- read_rds(here("data", "raw_fmdb_efforts_20210919.rds"))
 
 # Pull fish raw data ===========================================================
