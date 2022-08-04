@@ -5,13 +5,13 @@ message: >-
   metadata from this file.
 type: dataset
 authors:
-  - given-names: Bryan
-    family-names: Michael Maitland
+  - given-names: Bryan M.
+    family-names: Maitland
     email: bmaitland101@gmail.com
     affiliation: University of Wisconsin–Madison
     orcid: 'https://orcid.org/0000-0002-4491-5064'
-  - given-names: Alexander
-    family-names: W Latzka
+  - given-names: Alexander W.
+    family-names: Latzka
     email: alexander.latzka@wisconsin.gov
     affiliation: Wisconsin Department of Renewable Resources
     orcid: 'https://orcid.org/0000-0002-3969-5714'
