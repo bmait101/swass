@@ -112,5 +112,5 @@ df_daymet_longterm_std <- df_daymet_longterm %>%
 ## Save objects ----
 
 write_rds(df_daymet_longterm, here("output","data","daymet_longterm.rds"))
-write_rds(df_daymet_longterm_std, here("output","data","ddaymet_longterm_std.rds"))
+write_rds(df_daymet_longterm_std, here("output","data","daymet_longterm_std.rds"))
 

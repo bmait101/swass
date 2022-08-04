@@ -1,0 +1,20 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Seasonal weather and stream salmonids
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: dataset
+authors:
+  - given-names: Bryan
+    family-names: Michael Maitland
+    email: bmaitland101@gmail.com
+    affiliation: University of Wisconsin–Madison
+    orcid: 'https://orcid.org/0000-0002-4491-5064'
+  - given-names: Alexander
+    family-names: W Latzka
+    email: alexander.latzka@wisconsin.gov
+    affiliation: Wisconsin Department of Renewable Resources
+    orcid: 'https://orcid.org/0000-0002-3969-5714'
