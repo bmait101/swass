@@ -21,9 +21,9 @@ theme_set(theme_clean())
 
 
 # # use for Class 1 models
-# df_trends_bkt0 <- df_trends_bkt0 %>% 
+# df_analysis_bkt0 <- df_analysis_bkt0 %>% 
 #   filter(trout_class %in% c("CLASS I","CLASS II")) %>% droplevels()
-# df_trends_bnt0 <- df_trends_bnt0 %>% 
+# df_analysis_bnt0 <- df_analysis_bnt0 %>% 
 #   filter(trout_class %in% c("CLASS I","CLASS II")) %>% droplevels()
 
 
@@ -34,7 +34,7 @@ theme_set(theme_clean())
 #   scale_fill_brewer(palette = "Reds") +
 #   facet_wrap(vars(latitude_f), scales = "free_y") +
 #   labs(x = "Max summer temperature",
-#        y = expression(Density~(fish~mile^{-1})),
+#        y = expression(Density~(fish~km^{-1})),
 #        fill = "CI", title = "(a) Brook Trout - summer max temperature") + 
 #   coord_cartesian(clip = "off", ylim = c(0,1300))
 
@@ -44,7 +44,7 @@ theme_set(theme_clean())
 
 nd.1 <- expand_grid(
   total_effort = 1,year_s = 0, 
-  reach_id = levels(df_trends_bkt0$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bkt0$reach_id)[[1]], 
   gradient = 0, stream_order = 0,
   latitude_s = c(-1,0.5,1.5), 
   mean.tmax_summer = seq(-4,4, length.out = 200), 
@@ -59,7 +59,7 @@ nd.1 <- expand_grid(
 
 nd.2 <- expand_grid(
   total_effort = 1,year_s = 0, 
-  reach_id = levels(df_trends_bnt0$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bnt0$reach_id)[[1]], 
   gradient = 0, stream_order = 0,
   latitude_s = c(-1,0.5,1.5), 
   mean.tmax_summer = seq(-4,4, length.out = 200), 
@@ -87,23 +87,23 @@ pred2 <- bnt.mod %>%
     latitude_f, "-1" = "South WI", "0.5" = "Mid WI", "1.5" = "North WI"))
 
 p.bkt.temp.su.x <- pred1 %>% 
-  ggplot(aes(x = mean.tmax_summer, y = .epred, 
+  ggplot(aes(x = mean.tmax_summer, y = .epred * 1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Reds") +
   facet_wrap(vars(fct_rev(latitude_f)), scales = "free_y", nrow=3, ncol=1) +
   labs(x = "Max summer temperature",
-       y = expression(Recruitment~strength~(YOY~per~mile)),
+       y = expression(Recruitment~strength~(YOY~km^{-1})),
        fill = "CI")
 
 p.bnt.temp.su.x <- pred2 %>% 
-  ggplot(aes(x = mean.tmax_summer, y = .epred, 
+  ggplot(aes(x = mean.tmax_summer, y = .epred * 1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Reds") +
   facet_wrap(vars(fct_rev(latitude_f)), scales = "free_y", nrow=3, ncol=1) +
   labs(x = "Max summer temperature",
-       y = expression(Recruitment~strength~(YOY~per~mile)),
+       y = expression(Recruitment~strength~(YOY~km^{-1})),
        fill = "CI") 
 
 
@@ -113,7 +113,7 @@ p.bnt.temp.su.x <- pred2 %>%
 
 nd.1 <- expand_grid(
   total_effort = 1,year_s = 0, 
-  reach_id = levels(df_trends_bkt0$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bkt0$reach_id)[[1]], 
   gradient = 0, stream_order = 0,
   latitude_s = c(-1,0.5,1.5), 
   mean.tmax_summer = 0, 
@@ -128,7 +128,7 @@ nd.1 <- expand_grid(
 
 nd.2 <- expand_grid(
   total_effort = 1,year_s = 0, 
-  reach_id = levels(df_trends_bnt0$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bnt0$reach_id)[[1]], 
   gradient = 0, stream_order = 0,
   latitude_s = c(-1,0.5,1.5), 
   mean.tmax_summer = 0, 
@@ -156,23 +156,23 @@ pred4 <- bnt.mod %>%
     latitude_f, "-1" = "South WI", "0.5" = "Mid WI", "1.5" = "North WI"))
 
 p.bkt.temp.au.x <- pred3 %>% 
-  ggplot(aes(x = mean.tmax_autumn, y = .epred, 
+  ggplot(aes(x = mean.tmax_autumn, y = .epred * 1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Reds") +
   facet_wrap(vars(fct_rev(latitude_f)), scales = "free_y", nrow=3, ncol=1) +
   labs(x = "Max Autumn temperature", 
-       y = expression(Recruitment~strength~(YOY~per~mile)),
+       y = expression(Recruitment~strength~(YOY~km^{-1})),
        fill = "CI") 
 
 p.bnt.temp.au.x <- pred4 %>% 
-  ggplot(aes(x = mean.tmax_autumn, y = .epred, 
+  ggplot(aes(x = mean.tmax_autumn, y = .epred * 1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8),) + 
   scale_fill_brewer(palette = "Reds") +
   facet_wrap(vars(fct_rev(latitude_f)), scales = "free_y", nrow=3, ncol=1) +
   labs(x = "Max Autumn temperature", 
-       y = expression(Recruitment~strength~(YOY~per~mile)),
+       y = expression(Recruitment~strength~(YOY~km^{-1})),
        fill = "CI")  
 
 
@@ -195,7 +195,7 @@ p.bnt.temp.au.x <- pred4 %>%
 
 nd.1 <- expand_grid(
   total_effort = 1,year_s = 0, 
-  reach_id = levels(df_trends_bkt0$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bkt0$reach_id)[[1]], 
   gradient = 0, stream_order = 0,
   latitude_s = c(-1,0.5,1.5), 
   mean.tmax_summer = 0, 
@@ -210,7 +210,7 @@ nd.1 <- expand_grid(
 
 nd.2 <- expand_grid(
   total_effort = 1,year_s = 0, 
-  reach_id = levels(df_trends_bnt0$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bnt0$reach_id)[[1]], 
   gradient = 0, stream_order = 0,
   latitude_s = c(-1,0.5,1.5), 
   mean.tmax_summer = 0, 
@@ -239,23 +239,23 @@ pred6 <- bnt.mod %>%
     latitude_f, "-1" = "South WI", "0.5" = "Mid WI", "1.5" = "North WI"))
 
 p.bkt.temp.wi.x <- pred5 %>% 
-  ggplot(aes(x = mean.tmax_winter, y = .epred, 
+  ggplot(aes(x = mean.tmax_winter, y = .epred * 1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Reds") +
   facet_wrap(vars(fct_rev(latitude_f)), scales = "free_y", nrow=3, ncol=1) +
   labs(x = "Max winter temperature",
-       y = expression(Recruitment~strength~(YOY~per~mile)),
+       y = expression(Recruitment~strength~(YOY~km^{-1})),
        fill = "CI") 
 
 p.bnt.temp.wi.x <- pred6 %>% 
-  ggplot(aes(x = mean.tmax_winter, y = .epred, 
+  ggplot(aes(x = mean.tmax_winter, y = .epred * 1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Reds") +
   facet_wrap(vars(fct_rev(latitude_f)), scales = "free_y", nrow=3, ncol=1) +
   labs(x = "Max winter temperature", 
-       y = expression(Recruitment~strength~(YOY~per~mile)),
+       y = expression(Recruitment~strength~(YOY~km^{-1})),
        fill = "CI") 
 
 # p.temp.wi.int <- 
@@ -278,7 +278,7 @@ p.bnt.temp.wi.x <- pred6 %>%
 
 nd.1 <- expand_grid(
   total_effort = 1,year_s = 0, 
-  reach_id = levels(df_trends_bkt0$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bkt0$reach_id)[[1]], 
   gradient = 0, stream_order = 0,
   latitude_s = c(-1,0.5,1.5), 
   mean.tmax_summer = 0, 
@@ -293,7 +293,7 @@ nd.1 <- expand_grid(
 
 nd.2 <- expand_grid(
   total_effort = 1,year_s = 0, 
-  reach_id = levels(df_trends_bnt0$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bnt0$reach_id)[[1]], 
   gradient = 0, stream_order = 0,
   latitude_s = c(-1,0.5,1.5), 
   mean.tmax_summer = 0, 
@@ -321,23 +321,23 @@ pred8 <- bnt.mod %>%
     latitude_f, "-1" = "South WI", "0.5" = "Mid WI", "1.5" = "North WI"))
 
 p.bkt.temp.sp.x <- pred7 %>% 
-  ggplot(aes(x = mean.tmax_spring, y = .epred, 
+  ggplot(aes(x = mean.tmax_spring, y = .epred * 1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Reds") +
   facet_wrap(vars(fct_rev(latitude_f)), scales = "free_y", nrow=3, ncol=1) +
   labs(x = "Max spring temperature", 
-       y = expression(Recruitment~strength~(YOY~per~mile)),
+       y = expression(Recruitment~strength~(YOY~km^{-1})),
        fill = "CI") 
 
 p.bnt.temp.sp.x <- pred8 %>% 
-  ggplot(aes(x = mean.tmax_spring, y = .epred, 
+  ggplot(aes(x = mean.tmax_spring, y = .epred * 1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Reds") +
   facet_wrap(vars(fct_rev(latitude_f)), scales = "free_y", nrow=3, ncol=1) +
   labs(x = "Max spring temperature",
-       y = expression(Recruitment~strength~(YOY~per~mile)),
+       y = expression(Recruitment~strength~(YOY~km^{-1})),
        fill = "CI") 
 
 
@@ -362,7 +362,7 @@ p.bnt.temp.sp.x <- pred8 %>%
 
 nd.1 <- expand_grid(
   total_effort = 1,year_s = 0, 
-  reach_id = levels(df_trends_bkt0$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bkt0$reach_id)[[1]], 
   gradient = 0, stream_order = 0,
   latitude_s = c(-1,0.5,1.5), 
   mean.tmax_summer = 0, 
@@ -377,7 +377,7 @@ nd.1 <- expand_grid(
 
 nd.2 <- expand_grid(
   total_effort = 1,year_s = 0, 
-  reach_id = levels(df_trends_bnt0$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bnt0$reach_id)[[1]], 
   gradient = 0, stream_order = 0,
   latitude_s = c(-1,0.5,1.5), 
   mean.tmax_summer = 0, 
@@ -405,23 +405,23 @@ pred10 <- bnt.mod %>%
     latitude_f, "-1" = "South WI", "0.5" = "Mid WI", "1.5" = "North WI"))
 
 p.bkt.rain.su.x <- pred9 %>% 
-  ggplot(aes(x = total.prcp_summer, y = .epred, 
+  ggplot(aes(x = total.prcp_summer, y = .epred * 1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Blues") +
   facet_wrap(vars(fct_rev(latitude_f)), scales = "free_y", nrow=3, ncol=1) +
   labs(x = "Summer precipitation", 
-       y = expression(Recruitment~strength~(YOY~per~mile)),
+       y = expression(Recruitment~strength~(YOY~km^{-1})),
        fill = "CI") 
 
 p.bnt.rain.su.x <- pred10 %>% 
-  ggplot(aes(x = total.prcp_summer, y = .epred, 
+  ggplot(aes(x = total.prcp_summer, y = .epred * 1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Blues") +
   facet_wrap(vars(fct_rev(latitude_f)), scales = "free_y", nrow=3, ncol=1) +
   labs(x = "Summer precipitation",
-       y = expression(Recruitment~strength~(YOY~per~mile)),
+       y = expression(Recruitment~strength~(YOY~km^{-1})),
        fill = "CI") 
 
 
@@ -444,7 +444,7 @@ p.bnt.rain.su.x <- pred10 %>%
 
 nd.1 <- expand_grid(
   total_effort = 1,year_s = 0, 
-  reach_id = levels(df_trends_bkt0$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bkt0$reach_id)[[1]], 
   gradient = 0, stream_order = 0,
   latitude_s = c(-1,0.5,1.5), 
   mean.tmax_summer = 0, 
@@ -460,7 +460,7 @@ nd.1 <- expand_grid(
 
 nd.2 <- expand_grid(
   total_effort = 1,year_s = 0, 
-  reach_id = levels(df_trends_bnt0$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bnt0$reach_id)[[1]], 
   gradient = 0, stream_order = 0,
   latitude_s = c(-1,0.5,1.5), 
   mean.tmax_summer = 0, 
@@ -488,23 +488,23 @@ pred12 <- bnt.mod %>%
     latitude_f, "-1" = "South WI", "0.5" = "Mid WI", "1.5" = "North WI"))
 
 p.bkt.rain.au.x <- pred11 %>% 
-  ggplot(aes(x = total.prcp_autumn, y = .epred, 
+  ggplot(aes(x = total.prcp_autumn, y = .epred * 1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Blues") +
   facet_wrap(vars(fct_rev(latitude_f)), scales = "free_y", nrow=3, ncol=1) +
   labs(x = "Autumn precipitation", 
-       y = expression(Recruitment~strength~(YOY~per~mile)),
+       y = expression(Recruitment~strength~(YOY~km^{-1})),
        fill = "CI") 
 
 p.bnt.rain.au.x <- pred12 %>% 
-  ggplot(aes(x = total.prcp_autumn, y = .epred, 
+  ggplot(aes(x = total.prcp_autumn, y = .epred * 1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Blues") +
   facet_wrap(vars(fct_rev(latitude_f)), scales = "free_y", nrow=3, ncol=1) +
   labs(x = "Autumn precipitation",
-       y = expression(Recruitment~strength~(YOY~per~mile)),
+       y = expression(Recruitment~strength~(YOY~km^{-1})),
        fill = "CI") 
 
 
@@ -526,7 +526,7 @@ p.bnt.rain.au.x <- pred12 %>%
 
 nd.1 <- expand_grid(
   total_effort = 1,year_s = 0,
-  reach_id = levels(df_trends_bkt0$reach_id)[[1]],
+  reach_id = levels(df_analysis_bkt0$reach_id)[[1]],
   gradient = 0, stream_order = 0,
   latitude_s = c(-1,0.5,1.5),
   mean.tmax_summer = 0,
@@ -541,7 +541,7 @@ nd.1 <- expand_grid(
 
 nd.2 <- expand_grid(
   total_effort = 1,year_s = 0,
-  reach_id = levels(df_trends_bnt0$reach_id)[[1]],
+  reach_id = levels(df_analysis_bnt0$reach_id)[[1]],
   gradient = 0, stream_order = 0,
   latitude_s = c(-1,0.5,1.5),
   mean.tmax_summer = 0,
@@ -569,23 +569,23 @@ pred14 <- bnt.mod %>%
     latitude_f, "-1" = "South WI", "0.5" = "Mid WI", "1.5" = "North WI"))
 
 p.bkt.rain.wi.x <- pred13 %>%
-  ggplot(aes(x = total.prcp_winter, y = .epred,
+  ggplot(aes(x = total.prcp_winter, y = .epred * 1.609,
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Blues") +
   facet_wrap(vars(fct_rev(latitude_f)), scales = "free_y", nrow=3, ncol=1) +
   labs(x = "Winter precipitation", 
-       y = expression(Recruitment~strength~(YOY~per~mile)),
+       y = expression(Recruitment~strength~(YOY~km^{-1})),
        fill = "CI") 
 
 p.bnt.rain.wi.x <- pred14 %>%
-  ggplot(aes(x = total.prcp_winter, y = .epred,
+  ggplot(aes(x = total.prcp_winter, y = .epred * 1.609,
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Blues") +
   facet_wrap(vars(fct_rev(latitude_f)), scales = "free_y", nrow=3, ncol=1) +
   labs(x = "Winter precipitation",
-       y = expression(Recruitment~strength~(YOY~per~mile)),
+       y = expression(Recruitment~strength~(YOY~km^{-1})),
        fill = "CI")
 
 
@@ -607,7 +607,7 @@ p.bnt.rain.wi.x <- pred14 %>%
 
 nd.1 <- expand_grid(
   total_effort = 1,year_s = 0, 
-  reach_id = levels(df_trends_bkt0$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bkt0$reach_id)[[1]], 
   gradient = 0, stream_order = 0,latitude_s = c(-1,0.5,1.5), 
   mean.tmax_summer = 0, mean.tmax_autumn = 0, 
   mean.tmax_winter = 0, mean.tmax_spring = 0,
@@ -617,7 +617,7 @@ nd.1 <- expand_grid(
 
 nd.2 <- expand_grid(
   total_effort = 1,year_s = 0, 
-  reach_id = levels(df_trends_bnt0$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bnt0$reach_id)[[1]], 
   gradient = 0, stream_order = 0,latitude_s = c(-1,0.5,1.5), 
   mean.tmax_summer = 0, mean.tmax_autumn = 0, 
   mean.tmax_winter = 0, mean.tmax_spring = 0,
@@ -640,23 +640,23 @@ pred16 <- bnt.mod %>%
     latitude_f, "-1" = "South WI", "0.5" = "Mid WI", "1.5" = "North WI"))
 
 p.bkt.rain.sp.x <- pred15 %>% 
-  ggplot(aes(x = total.prcp_spring, y = .epred, 
+  ggplot(aes(x = total.prcp_spring, y = .epred * 1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Blues") +
   facet_wrap(vars(fct_rev(latitude_f)), scales = "free_y", nrow=3, ncol=1) +
   labs(x = "Spring precipitation", 
-       y = expression(Recruitment~strength~(YOY~per~mile)),
+       y = expression(Recruitment~strength~(YOY~km^{-1})),
        fill = "CI")
 
 p.bnt.rain.sp.x <- pred16 %>% 
-  ggplot(aes(x = total.prcp_spring, y = .epred, 
+  ggplot(aes(x = total.prcp_spring, y = .epred * 1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Blues") +
   facet_wrap(vars(fct_rev(latitude_f)), scales = "free_y", nrow=3, ncol=1) +
   labs(x = "Spring precipitation", 
-       y = expression(Recruitment~strength~(YOY~per~mile)),
+       y = expression(Recruitment~strength~(YOY~km^{-1})),
        fill = "CI")
 
 # p.rain.sp.panel <- 
@@ -698,22 +698,39 @@ p.temp.x <-
      (p.bnt.temp.sp.x + theme(axis.title.y = element_blank()))
   )
 
+# save plot
+path <- here::here("output","figs1","fig4_temp_panel")
+ggsave(
+  glue::glue("{path}.pdf"), 
+  plot = p.temp.x, 
+  width = 10, 
+  height = 12, 
+  device = cairo_pdf
+)
+# manually add panel letters then covert 
+pdftools::pdf_convert(
+  pdf = glue::glue("{path}.pdf"),
+  filenames = glue::glue("{path}.png"),
+  format = "png", 
+  dpi = 600
+)
 
-ggsave(here("output","figs","epred_x_temp.png"),p.temp.x, 
-       device=agg_png, res=300, height = 12, width = 10)
-ggsave(here("output","figs","epred_x_temp.pdf"),p.temp.x, 
-       device=cairo_pdf, height = 12, width = 10)
+
+# ggsave(here("output","figs","epred_x_temp.png"),p.temp.x, 
+#        device=agg_png, res=300, height = 12, width = 10)
+# ggsave(here("output","figs","epred_x_temp.pdf"),p.temp.x, 
+#        device=cairo_pdf, height = 12, width = 10)
 
 
-a <- p.bkt.temp.su.x | (p.bnt.temp.su.x + theme(axis.title.y = element_blank()))
-
-ggsave(here("output","figs","epred_x_temp_su.png"), a, 
-       device=agg_png, res=600, height = 6.5, width = 7)
-
-b <- p.bkt.temp.sp.x | (p.bnt.temp.sp.x + theme(axis.title.y = element_blank()))
-
-ggsave(here("output","figs","epred_x_temp_sp.png"), b, 
-       device=agg_png, res=600, height = 6.5, width = 7)
+# a <- p.bkt.temp.su.x | (p.bnt.temp.su.x + theme(axis.title.y = element_blank()))
+# 
+# ggsave(here("output","figs","epred_x_temp_su.png"), a, 
+#        device=agg_png, res=600, height = 6.5, width = 7)
+# 
+# b <- p.bkt.temp.sp.x | (p.bnt.temp.sp.x + theme(axis.title.y = element_blank()))
+# 
+# ggsave(here("output","figs","epred_x_temp_sp.png"), b, 
+#        device=agg_png, res=600, height = 6.5, width = 7)
 
 
 # Rain -----------------------
@@ -742,24 +759,41 @@ p.rain.x <-
   )
 
 
-ggsave(here("output","figs","epred_x_rain.png"), p.rain.x,
-       device=agg_png, res=300, height = 12, width = 10)
-ggsave(here("output","figs","epred_x_rain.pdf"), p.rain.x,
-       device=cairo_pdf, height = 12, width = 10)
+# save plot
+path <- here::here("output","figs1","fig5_rain_panel")
+ggsave(
+  glue::glue("{path}.pdf"), 
+  plot = p.rain.x, 
+  width = 10, 
+  height = 12, 
+  device = cairo_pdf
+)
+# manually add fish images then covert 
+pdftools::pdf_convert(
+  pdf = glue::glue("{path}.pdf"),
+  filenames = glue::glue("{path}.png"),
+  format = "png", 
+  dpi = 600
+)
+
+# ggsave(here("output","figs","epred_x_rain.png"), p.rain.x,
+#        device=agg_png, res=300, height = 12, width = 10)
+# ggsave(here("output","figs","epred_x_rain.pdf"), p.rain.x,
+#        device=cairo_pdf, height = 12, width = 10)
 
 
-a <- p.bkt.rain.su.x | (p.bnt.rain.su.x + theme(axis.title.y = element_blank()))
-
-ggsave(here("output","figs","epred_x_rain_su.png"), a, 
-       device=agg_png, res=600, height = 6.5, width = 7)
-
-b <- p.bkt.rain.wi.x | (p.bnt.rain.wi.x + theme(axis.title.y = element_blank()))
-
-ggsave(here("output","figs","epred_x_rain_wi.png"), b, 
-       device=agg_png, res=600, height = 6.5, width = 7)
-
-c <- p.bkt.rain.sp.x | (p.bnt.rain.sp.x + theme(axis.title.y = element_blank()))
-
-ggsave(here("output","figs","epred_x_rain_sp.png"), c, 
-       device=agg_png, res=600, height = 6.5, width = 7)
+# a <- p.bkt.rain.su.x | (p.bnt.rain.su.x + theme(axis.title.y = element_blank()))
+# 
+# ggsave(here("output","figs","epred_x_rain_su.png"), a, 
+#        device=agg_png, res=600, height = 6.5, width = 7)
+# 
+# b <- p.bkt.rain.wi.x | (p.bnt.rain.wi.x + theme(axis.title.y = element_blank()))
+# 
+# ggsave(here("output","figs","epred_x_rain_wi.png"), b, 
+#        device=agg_png, res=600, height = 6.5, width = 7)
+# 
+# c <- p.bkt.rain.sp.x | (p.bnt.rain.sp.x + theme(axis.title.y = element_blank()))
+# 
+# ggsave(here("output","figs","epred_x_rain_sp.png"), c, 
+#        device=agg_png, res=600, height = 6.5, width = 7)
 

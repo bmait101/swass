@@ -27,7 +27,7 @@ theme_set(theme_clean())
 
 nd.1 <- expand_grid(
   total_effort = 1,year_s = 0, 
-  reach_id = levels(df_trends_bkt0$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bkt0$reach_id)[[1]], 
   latitude_s = 0, gradient = 0, stream_order = 0,
   mean.tmax_summer = seq(-4,4, length.out = 200), 
   mean.tmax_autumn = 0, 
@@ -41,7 +41,7 @@ nd.1 <- expand_grid(
 
 nd.2 <- expand_grid(
   total_effort = 1,year_s = 0, 
-  reach_id = levels(df_trends_bnt0$reach_id)[[1]], 
+  reach_id = levels(df_analysis_bnt0$reach_id)[[1]], 
   latitude_s = 0, gradient = 0, stream_order = 0,
   mean.tmax_summer = seq(-4,4, length.out = 200), 
   mean.tmax_autumn = 0, 

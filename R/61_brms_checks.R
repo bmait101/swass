@@ -4,7 +4,7 @@
 library(tidyverse)
 library(here)
 library(brms)
-library(brmstools)
+# library(brmstools)
 library(performance)
 library(tidybayes)
 library(ggdist)
@@ -44,19 +44,19 @@ bkt.brm2a <- add_criterion(bkt.brm2a, c("waic","loo"))
 bkt.brm3 <- add_criterion(bkt.brm3, c("waic","loo"))
 bkt.brm3a <- add_criterion(bkt.brm3a, c("waic","loo"))
 bkt.brm4 <- add_criterion(bkt.brm4, c("waic","loo"))
-loo_compare(bkt.brm1,bkt.brm2,bkt.brm2a,bkt.brm3,bkt.brm3a,bkt.brm4, criterion = "waic")
+loo_compare(bkt.brm1,bkt.brm2,bkt.brm2a,bkt.brm3,bkt.brm4, criterion = "waic")
 
 bnt.brm1 <- add_criterion(bnt.brm1, c("waic","loo"))
 bnt.brm2 <- add_criterion(bnt.brm2, c("waic","loo"))
 bnt.brm3 <- add_criterion(bnt.brm3, c("waic","loo"))
 bnt.brm3a <- add_criterion(bnt.brm3a, c("waic","loo"))
 bnt.brm4 <- add_criterion(bnt.brm4, c("waic","loo"))
-loo_compare(bnt.brm1,bnt.brm2,bnt.brm3,bnt.brm3a,bnt.brm4, criterion = "waic")
+loo_compare(bnt.brm1,bnt.brm2,bnt.brm3,bnt.brm4, criterion = "waic")
 
 
 # Best fit models
-bkt.mod <- bkt.brm3a
-bnt.mod <- bnt.brm3a
+bkt.mod <- bkt.brm4
+bnt.mod <- bnt.brm4
 
 # Pull variables for best fit models
 vars <- get_variables(bkt.mod)[c(2:11)]
@@ -104,60 +104,60 @@ write.csv(summary_mod1, here("output","tables","bkt_model_summary.csv"),
 
 
 # Coef plot
-coefplot(bkt.mod, level=0.95, grouping = "reach_id",
-         r_col='blue', r_intervals=FALSE, r_alpha=0.75) +
-  geom_vline(aes(xintercept=0), alpha=0.5, color='red')
+# coefplot(bkt.mod, level=0.95, grouping = "reach_id",
+#          r_col='blue', r_intervals=FALSE, r_alpha=0.75) +
+#   geom_vline(aes(xintercept=0), alpha=0.5, color='red')
 
 
 # Plot effects
-conditional_effects(bkt.mod, conditions = conditions)
-conditional_smooths(bkt.mod)
-conditional_effects(bkt.mod, conditions = conditions, 
-                    effects = "stream_order")
-conditional_effects(bkt.mod, conditions = conditions, 
-                    effects = "mean.tmax_summer")
-conditional_effects(bkt.mod, conditions = conditions, 
-                    effects = "mean.tmax_summer")
-conditional_effects(bkt.mod, conditions = conditions, 
-                    effects = "mean.tmax_autumn")
-conditional_effects(bkt.mod, conditions = conditions, 
-                    effects = "mean.tmax_winter")
-conditional_effects(bkt.mod, conditions = conditions, 
-                    effects = "mean.tmax_spring")
-conditional_effects(bkt.mod, conditions = conditions, 
-                    effects = "total.prcp_summer")
-conditional_effects(bkt.mod, conditions = conditions, 
-                    effects = "total.prcp_autumn")
-conditional_effects(bkt.mod, conditions = conditions, 
-                    effects = "total.prcp_winter")
-conditional_effects(bkt.mod, conditions = conditions, 
-                    effects = "total.prcp_spring")
-
-conditional_effects(bkt.mod, conditions = conditions, 
-                    int_conditions = int_conditions,
-                    effects = "mean.tmax_summer:latitude_s")
-conditional_effects(bkt.mod, conditions = conditions, 
-                    int_conditions = int_conditions,
-                    effects = "mean.tmax_autumn:latitude_s")
-conditional_effects(bkt.mod, conditions = conditions, 
-                    int_conditions = int_conditions,
-                    effects = "mean.tmax_winter:latitude_s")
-conditional_effects(bkt.mod, conditions = conditions, 
-                    int_conditions = int_conditions,
-                    effects = "mean.tmax_spring:latitude_s")
-
-conditional_effects(bkt.mod, conditions = conditions, 
-                    int_conditions = int_conditions,
-                    effects = "total.prcp_summer:latitude_s")
-conditional_effects(bkt.mod, conditions = conditions, 
-                    int_conditions = int_conditions,
-                    effects = "total.prcp_autumn:latitude_s")
-conditional_effects(bkt.mod, conditions = conditions, 
-                    int_conditions = int_conditions,
-                    effects = "total.prcp_winter:latitude_s")
-conditional_effects(bkt.mod, conditions = conditions, 
-                    int_conditions = int_conditions,
-                    effects = "total.prcp_spring:latitude_s")
+# conditional_effects(bkt.mod, conditions = conditions)
+# conditional_smooths(bkt.mod)
+# conditional_effects(bkt.mod, conditions = conditions, 
+#                     effects = "stream_order")
+# conditional_effects(bkt.mod, conditions = conditions, 
+#                     effects = "mean.tmax_summer")
+# conditional_effects(bkt.mod, conditions = conditions, 
+#                     effects = "mean.tmax_summer")
+# conditional_effects(bkt.mod, conditions = conditions, 
+#                     effects = "mean.tmax_autumn")
+# conditional_effects(bkt.mod, conditions = conditions, 
+#                     effects = "mean.tmax_winter")
+# conditional_effects(bkt.mod, conditions = conditions, 
+#                     effects = "mean.tmax_spring")
+# conditional_effects(bkt.mod, conditions = conditions, 
+#                     effects = "total.prcp_summer")
+# conditional_effects(bkt.mod, conditions = conditions, 
+#                     effects = "total.prcp_autumn")
+# conditional_effects(bkt.mod, conditions = conditions, 
+#                     effects = "total.prcp_winter")
+# conditional_effects(bkt.mod, conditions = conditions, 
+#                     effects = "total.prcp_spring")
+# 
+# conditional_effects(bkt.mod, conditions = conditions, 
+#                     int_conditions = int_conditions,
+#                     effects = "mean.tmax_summer:latitude_s")
+# conditional_effects(bkt.mod, conditions = conditions, 
+#                     int_conditions = int_conditions,
+#                     effects = "mean.tmax_autumn:latitude_s")
+# conditional_effects(bkt.mod, conditions = conditions, 
+#                     int_conditions = int_conditions,
+#                     effects = "mean.tmax_winter:latitude_s")
+# conditional_effects(bkt.mod, conditions = conditions, 
+#                     int_conditions = int_conditions,
+#                     effects = "mean.tmax_spring:latitude_s")
+# 
+# conditional_effects(bkt.mod, conditions = conditions, 
+#                     int_conditions = int_conditions,
+#                     effects = "total.prcp_summer:latitude_s")
+# conditional_effects(bkt.mod, conditions = conditions, 
+#                     int_conditions = int_conditions,
+#                     effects = "total.prcp_autumn:latitude_s")
+# conditional_effects(bkt.mod, conditions = conditions, 
+#                     int_conditions = int_conditions,
+#                     effects = "total.prcp_winter:latitude_s")
+# conditional_effects(bkt.mod, conditions = conditions, 
+#                     int_conditions = int_conditions,
+#                     effects = "total.prcp_spring:latitude_s")
 
 
 # Brown trout =============================================================
@@ -202,47 +202,47 @@ write.csv(summary_mod2, here("output","tables","bnt_model_summary.csv"),
 
 # Plot effects
 
-conditional_smooths(bnt.mod)
-conditional_effects(bnt.mod, conditions = conditions, effects = "year_s")
-conditional_effects(bnt.mod, conditions = conditions, 
-                    effects = "mean.tmax_summer")
-conditional_effects(bnt.mod, conditions = conditions, 
-                    effects = "mean.tmax_autumn")
-conditional_effects(bnt.mod, conditions = conditions, 
-                    effects = "mean.tmax_winter")
-conditional_effects(bnt.mod, conditions = conditions, 
-                    effects = "mean.tmax_spring")
-conditional_effects(bnt.mod, conditions = conditions, 
-                    effects = "total.prcp_summer")
-conditional_effects(bnt.mod, conditions = conditions, 
-                    effects = "total.prcp_autumn")
-conditional_effects(bnt.mod, conditions = conditions, 
-                    effects = "total.prcp_winter")
-conditional_effects(bnt.mod, conditions = conditions, 
-                    effects = "total.prcp_spring")
-
-conditional_effects(bnt.mod, conditions = conditions, 
-                    int_conditions = int_conditions,
-                    effects = "mean.tmax_summer:latitude_s")
-conditional_effects(bnt.mod, conditions = conditions, 
-                    int_conditions = int_conditions,
-                    effects = "mean.tmax_autumn:latitude_s")
-conditional_effects(bnt.mod, conditions = conditions, 
-                    int_conditions = int_conditions,
-                    effects = "mean.tmax_autumn:latitude_s")
-conditional_effects(bnt.mod, conditions = conditions, 
-                    int_conditions = int_conditions,
-                    effects = "mean.tmax_spring:latitude_s")
-
-conditional_effects(bnt.mod, conditions = conditions, 
-                    int_conditions = int_conditions,
-                    effects = "total.prcp_summer:latitude_s")
-conditional_effects(bnt.mod, conditions = conditions, 
-                    int_conditions = int_conditions,
-                    effects = "total.prcp_autumn:latitude_s")
-conditional_effects(bnt.mod, conditions = conditions, 
-                    int_conditions = int_conditions,
-                    effects = "total.prcp_winter:latitude_s")
-conditional_effects(bnt.mod, conditions = conditions, 
-                    int_conditions = int_conditions,
-                    effects = "total.prcp_spring:latitude_s")
+# conditional_smooths(bnt.mod)
+# conditional_effects(bnt.mod, conditions = conditions, effects = "year_s")
+# conditional_effects(bnt.mod, conditions = conditions, 
+#                     effects = "mean.tmax_summer")
+# conditional_effects(bnt.mod, conditions = conditions, 
+#                     effects = "mean.tmax_autumn")
+# conditional_effects(bnt.mod, conditions = conditions, 
+#                     effects = "mean.tmax_winter")
+# conditional_effects(bnt.mod, conditions = conditions, 
+#                     effects = "mean.tmax_spring")
+# conditional_effects(bnt.mod, conditions = conditions, 
+#                     effects = "total.prcp_summer")
+# conditional_effects(bnt.mod, conditions = conditions, 
+#                     effects = "total.prcp_autumn")
+# conditional_effects(bnt.mod, conditions = conditions, 
+#                     effects = "total.prcp_winter")
+# conditional_effects(bnt.mod, conditions = conditions, 
+#                     effects = "total.prcp_spring")
+# 
+# conditional_effects(bnt.mod, conditions = conditions, 
+#                     int_conditions = int_conditions,
+#                     effects = "mean.tmax_summer:latitude_s")
+# conditional_effects(bnt.mod, conditions = conditions, 
+#                     int_conditions = int_conditions,
+#                     effects = "mean.tmax_autumn:latitude_s")
+# conditional_effects(bnt.mod, conditions = conditions, 
+#                     int_conditions = int_conditions,
+#                     effects = "mean.tmax_autumn:latitude_s")
+# conditional_effects(bnt.mod, conditions = conditions, 
+#                     int_conditions = int_conditions,
+#                     effects = "mean.tmax_spring:latitude_s")
+# 
+# conditional_effects(bnt.mod, conditions = conditions, 
+#                     int_conditions = int_conditions,
+#                     effects = "total.prcp_summer:latitude_s")
+# conditional_effects(bnt.mod, conditions = conditions, 
+#                     int_conditions = int_conditions,
+#                     effects = "total.prcp_autumn:latitude_s")
+# conditional_effects(bnt.mod, conditions = conditions, 
+#                     int_conditions = int_conditions,
+#                     effects = "total.prcp_winter:latitude_s")
+# conditional_effects(bnt.mod, conditions = conditions, 
+#                     int_conditions = int_conditions,
+#                     effects = "total.prcp_spring:latitude_s")

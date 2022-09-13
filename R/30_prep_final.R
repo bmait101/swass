@@ -53,7 +53,7 @@ rm(tmp)
 
 ## Export dataset ----
 
-df_drivers %>% write_rds(here("output","data", "df_drivers.rds"))
+# df_drivers %>% write_rds(here("output","data", "df_drivers.rds"))
 
 
 

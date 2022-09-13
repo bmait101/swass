@@ -38,8 +38,9 @@ plot_titles <- c(
 
 
 p.pred.trends <- p.data %>% 
-  ggplot(aes(x = year, y = exp(fit))) +
-  geom_ribbon(aes(ymin = exp(lower), ymax = exp(upper), x = year, 
+  ggplot(aes(x = year, y = exp(fit)  * 1.609)) +
+  geom_ribbon(aes(ymin = exp(lower) * 1.609, ymax = exp(upper) * 1.609, 
+                  x = year, 
                   fill = age), 
               alpha = 0.5, inherit.aes = FALSE) +
   geom_line(aes(color = age, linetype = age)) + 
@@ -47,7 +48,7 @@ p.pred.trends <- p.data %>%
     vars(group), nrow = 2, scales="free", 
     labeller = as_labeller(plot_titles)) +
   scale_x_continuous(breaks = seq(1995,2020,5), limits = c(1994, 2020))+ 
-  scale_y_continuous(limits = c(0,410)) +
+  scale_y_continuous(limits = c(0,650)) +
   scale_linetype_manual(values = c("solid", "solid")) + 
   scale_color_manual(values = c("forestgreen", "black")) +
   scale_fill_manual(values = c("forestgreen", "grey80")) +
@@ -55,7 +56,7 @@ p.pred.trends <- p.data %>%
   # scale_fill_manual(values = c("#D8B365", "#5AB4AC")) +
   labs(
     x = "Year",
-    y = expression(Relative~abundance~(fish~mile^{-1}))
+    y = expression(Relative~abundance~(fish~km^{-1}))
     ) + 
   theme_minimal(base_family = "sans", base_size = 12) +
   theme(
@@ -82,11 +83,11 @@ p.pred.trends
 #        device=cairo_pdf, height = 6, width = 9)
 
 
-path <- here::here("output", "figs", "fig2_trend_panel_R1")
+path <- here::here("output", "figs1", "fig2_trend_panel")
 ggsave(glue::glue("{path}.pdf"), plot = p.pred.trends, 
        width = 9, height = 6, device = cairo_pdf)
-# pdftools::pdf_convert(pdf = glue::glue("{path}.pdf"),
-#                       filenames = glue::glue("{path}.png"),
-#                       format = "png", dpi = 300)
+pdftools::pdf_convert(pdf = glue::glue("{path}.pdf"),
+                      filenames = glue::glue("{path}.png"),
+                      format = "png", dpi = 600)
 
 

@@ -7,7 +7,10 @@ theme_clean <- function() {
       panel.background = element_rect(fill = "white", color = "black",
                                       size = .5),
       panel.border = element_rect(fill = NA, color = "black", size = .5),
-      panel.grid = element_blank(),
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor.x = element_blank(),
+      panel.grid.major.y = element_line(linetype = 2, size = 0.25, color = "grey"), 
+      panel.grid.minor.y = element_blank(),
       panel.spacing = unit(.5, "lines"),
       axis.ticks = element_line(size = 0.5, color = "black"),
       axis.ticks.length = unit(.25, 'cm'),
@@ -19,8 +22,9 @@ theme_clean <- function() {
 }
 
 theme_set(theme_clean())
+theme_set(theme_bw())
 
-
+# Prep =================
 
 vars_f <- tibble(
   params = factor(vars, levels = c(
@@ -52,7 +56,7 @@ vars2_f <- tibble(
   )))
 
 
-# Extract Coefficients and posterior samples/draws -------------------
+# Extract Coefficients and posterior samples/draws
 draws.b.bkt <- bkt.mod %>% gather_draws(`b_.*`, regex = TRUE)
 draws.b.bnt <- bnt.mod %>% gather_draws(`b_.*`, regex = TRUE)
 # draws.r.bkt <- bkt.mod %>% gather_draws(r_reach_id[reachid,covar])
@@ -96,15 +100,13 @@ bkt.hyp.post2 <- c(
 )
 
 
-
-
 # Hypothesis tests
 bnt.hyp.post <- c(
   hypothesis(bnt.mod, 'mean.tmax_summer>0')$hypothesis[[7]],
-  hypothesis(bnt.mod, 'mean.tmax_autumn<0')$hypothesis[[7]],
+  hypothesis(bnt.mod, 'mean.tmax_autumn>0')$hypothesis[[7]],
   hypothesis(bnt.mod, 'mean.tmax_winter<0')$hypothesis[[7]],
-  hypothesis(bnt.mod, 'mean.tmax_spring<0')$hypothesis[[7]],
-  hypothesis(bnt.mod, 'Imean.tmax_springE2>0')$hypothesis[[7]],
+  hypothesis(bnt.mod, 'mean.tmax_spring>0')$hypothesis[[7]],
+  hypothesis(bnt.mod, 'Imean.tmax_springE2<0')$hypothesis[[7]],
   
   hypothesis(bnt.mod, 'total.prcp_summer>0')$hypothesis[[7]],
   hypothesis(bnt.mod, 'total.prcp_autumn<0')$hypothesis[[7]],
@@ -142,7 +144,7 @@ hyp.post2 <- tibble(
 ) 
 
 
-
+# Plot ==========
 
 p.coefs <- draws.b.bkt %>% 
   mutate(species = "brook_trout") %>%
@@ -207,9 +209,30 @@ p.coefs.int <- draws.b.bkt %>%
   labs(y = "", x = "Effect size")
 p.coefs.int
 
-p.coefs / p.coefs.int 
+p.coef.panel <- p.coefs / p.coefs.int 
+p.coef.panel
+
+
 
 ggsave(here("output","figs","brms_coef_plot.png"),
        device=ragg::agg_png, res=300, height = 6, width = 8)
 ggsave(here("output","figs","brms_coef_plot.pdf"),
        device=cairo_pdf, height = 6, width = 8)
+
+
+# save plot
+path <- here::here("output","figs1","fig3_coef_plot")
+ggsave(
+  glue::glue("{path}.pdf"), 
+  plot = p.coef.panel, 
+  width = 8, 
+  height = 6, 
+  device = cairo_pdf
+)
+# manually add fish images then covert 
+pdftools::pdf_convert(
+  pdf = glue::glue("{path}.pdf"),
+  filenames = glue::glue("{path}.png"),
+  format = "png", 
+  dpi = 600
+)

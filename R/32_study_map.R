@@ -8,14 +8,14 @@ library(ragg)
 library(sf)
 
 # load prepped data
-source(here::here("R", "50_prep_data.R"))
+source(here::here("R", "30_prep_final.R"))
 
 
 # Maps of study sites ==========================================================
 
 
 # df of sites
-df_sites <- new.dat %>%
+df_sites <- df_analysis %>%
   distinct(site.seq.no, .keep_all = TRUE) %>% 
   # select(site.seq.no, latitude, longitude) %>%
   st_as_sf(coords = c("longitude", "latitude"), crs = 4326) %>%
@@ -116,11 +116,25 @@ p.full.map <-
   draw_plot(p.inset, x = 0.65, y = 0.76, width = 0.25, height = 0.25)
 p.full.map
 
-ggsave(here("output","figs","fig1_map_trout_sites.png"), p.full.map,
-       device=agg_png, res=300, width = 6, height = 5)
-ggsave(here("output","figs","fig1_map_trout_sites.pdf"), p.full.map,
-       device=cairo_pdf, height = 8, width = 7)
 
+# save plot
+path <- here::here("output","figs1","fig1_map")
+ggsave(
+  glue::glue("{path}.pdf"), 
+  plot = p.full.map, 
+  width = 6, 
+  height = 5, 
+  device = cairo_pdf
+)
+pdftools::pdf_convert(
+  pdf = glue::glue("{path}.pdf"),
+  filenames = glue::glue("{path}.png"),
+  format = "png", 
+  dpi = 600
+)
+
+
+#===============================================================================
 
 
 
