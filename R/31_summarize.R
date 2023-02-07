@@ -14,12 +14,12 @@ source(here::here("R", "30_prep_final.R"))
 
 # Data summary =================================================================
 
-new.dat %>%  
+df_analysis %>%  
   mutate(across(c(survey.seq.no, visit.fish.seq.no, wbic), as_factor)) %>% 
   skimr::skim()
 
 # Plot the count of observation by survey purpose
-new.dat %>%
+df_analysis %>%
   distinct(survey.seq.no, .keep_all=TRUE) %>%
   group_by(primary.survey.purpose) %>% tally() %>%
   ggplot(aes(x = reorder(primary.survey.purpose, n), y = n)) +
@@ -31,10 +31,10 @@ new.dat %>%
 # Counts =======================================================================
 
 # Histogram of year-observations for stream reaches
-hist(new.dat$yr_obs)
+hist(df_analysis$yr_obs)
 
 # Count of observations over time by species and sizeclass
-new.dat %>% 
+df_analysis %>% 
   ggplot(aes(x = year, fill = gear)) + 
   facet_grid(size_class~species, scales = "free") + 
   geom_bar(width = 0.75, color = "black") + 
@@ -44,7 +44,7 @@ new.dat %>%
 
 # summary of number of surveys per year
 (
-  survs_per_year <- new.dat %>%
+  survs_per_year <- df_analysis %>%
     distinct(year, survey.seq.no) %>% 
     group_by(year) %>%
     summarise(n = n()) %>%
@@ -59,7 +59,7 @@ new.dat %>%
 
 # summary of number of efforts per year
 (
-  effs_per_year <- new.dat %>%
+  effs_per_year <- df_analysis %>%
     distinct(year, visit.fish.seq.no) %>% 
     group_by(year) %>%
     summarise(n = n()) %>%
@@ -72,7 +72,7 @@ new.dat %>%
 )
 
 # plot number of surveys per year
-p.survs.time <- new.dat %>%
+p.survs.time <- df_analysis %>%
   distinct(survey.seq.no, .keep_all = TRUE) %>% 
   mutate(gear = fct_recode(gear, 
                            "Backpack Shocker" = "backpack_shocker", 
@@ -154,16 +154,17 @@ summary_functions <- list(
 )
 
 # Fish cpes
-desc_stats_fish <- new.dat %>% 
+desc_stats_fish <- df_analysis %>% 
   select(species, size_class, cpe) %>% 
+  mutate(cpe_km = cpe / 1.609) |> 
   group_by(species, size_class) %>% 
-  summarise(across(c(cpe), summary_functions)) %>%
+  summarise(across(c(cpe_km), summary_functions)) %>%
   mutate(across(where(is.numeric), round, 1))
 desc_stats_fish
 
-# write.csv(desc_stats_fish, 
-#           here("output","tables","summary_stats_trout_counts.csv"), 
-#           row.names = FALSE)
+write.csv(desc_stats_fish,
+          here("output","tables","summary_stats_trout_counts_km.csv"),
+          row.names = FALSE)
 
 # Covariates (requires non-standardized data)
 desc_stats_covar <- new.dat %>% 

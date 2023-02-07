@@ -40,16 +40,16 @@ bnt.brm4 <- readRDS(here("output", "models", "brms", "bnt.brm4.rds"))
 ## LOO compare ----
 bkt.brm1 <- add_criterion(bkt.brm1, c("waic","loo"))
 bkt.brm2 <- add_criterion(bkt.brm2, c("waic","loo"))
-bkt.brm2a <- add_criterion(bkt.brm2a, c("waic","loo"))
+# bkt.brm2a <- add_criterion(bkt.brm2a, c("waic","loo"))
 bkt.brm3 <- add_criterion(bkt.brm3, c("waic","loo"))
-bkt.brm3a <- add_criterion(bkt.brm3a, c("waic","loo"))
+# bkt.brm3a <- add_criterion(bkt.brm3a, c("waic","loo"))
 bkt.brm4 <- add_criterion(bkt.brm4, c("waic","loo"))
 loo_compare(bkt.brm1,bkt.brm2,bkt.brm2a,bkt.brm3,bkt.brm4, criterion = "waic")
 
 bnt.brm1 <- add_criterion(bnt.brm1, c("waic","loo"))
 bnt.brm2 <- add_criterion(bnt.brm2, c("waic","loo"))
 bnt.brm3 <- add_criterion(bnt.brm3, c("waic","loo"))
-bnt.brm3a <- add_criterion(bnt.brm3a, c("waic","loo"))
+# bnt.brm3a <- add_criterion(bnt.brm3a, c("waic","loo"))
 bnt.brm4 <- add_criterion(bnt.brm4, c("waic","loo"))
 loo_compare(bnt.brm1,bnt.brm2,bnt.brm3,bnt.brm4, criterion = "waic")
 
@@ -98,8 +98,8 @@ summary_mod1 <- summary_mod1 %>%
   rownames_to_column(var = "parameter")  %>%
   mutate(across(where(is.numeric), round, 2))
 
-write.csv(summary_mod1, here("output","tables","bkt_model_summary.csv"),
-          row.names = FALSE)
+# write.csv(summary_mod1, here("output","tables","bkt_model_summary.csv"),
+#           row.names = FALSE)
 
 
 
@@ -197,8 +197,8 @@ summary_mod2 <- summary_mod2 %>%
   rownames_to_column(var = "parameter")  %>%
   mutate(across(where(is.numeric), round, 2))
 
-write.csv(summary_mod2, here("output","tables","bnt_model_summary.csv"),
-          row.names = FALSE)
+# write.csv(summary_mod2, here("output","tables","bnt_model_summary.csv"),
+          # row.names = FALSE)
 
 # Plot effects
 

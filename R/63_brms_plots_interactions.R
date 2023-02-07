@@ -87,7 +87,7 @@ pred2 <- bnt.mod %>%
     latitude_f, "-1" = "South WI", "0.5" = "Mid WI", "1.5" = "North WI"))
 
 p.bkt.temp.su.x <- pred1 %>% 
-  ggplot(aes(x = mean.tmax_summer, y = .epred * 1.609, 
+  ggplot(aes(x = mean.tmax_summer, y = .epred/1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Reds") +
@@ -97,7 +97,7 @@ p.bkt.temp.su.x <- pred1 %>%
        fill = "CI")
 
 p.bnt.temp.su.x <- pred2 %>% 
-  ggplot(aes(x = mean.tmax_summer, y = .epred * 1.609, 
+  ggplot(aes(x = mean.tmax_summer, y = .epred/1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Reds") +
@@ -156,7 +156,7 @@ pred4 <- bnt.mod %>%
     latitude_f, "-1" = "South WI", "0.5" = "Mid WI", "1.5" = "North WI"))
 
 p.bkt.temp.au.x <- pred3 %>% 
-  ggplot(aes(x = mean.tmax_autumn, y = .epred * 1.609, 
+  ggplot(aes(x = mean.tmax_autumn, y = .epred/1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Reds") +
@@ -166,7 +166,7 @@ p.bkt.temp.au.x <- pred3 %>%
        fill = "CI") 
 
 p.bnt.temp.au.x <- pred4 %>% 
-  ggplot(aes(x = mean.tmax_autumn, y = .epred * 1.609, 
+  ggplot(aes(x = mean.tmax_autumn, y = .epred/1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8),) + 
   scale_fill_brewer(palette = "Reds") +
@@ -239,7 +239,7 @@ pred6 <- bnt.mod %>%
     latitude_f, "-1" = "South WI", "0.5" = "Mid WI", "1.5" = "North WI"))
 
 p.bkt.temp.wi.x <- pred5 %>% 
-  ggplot(aes(x = mean.tmax_winter, y = .epred * 1.609, 
+  ggplot(aes(x = mean.tmax_winter, y = .epred/1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Reds") +
@@ -249,7 +249,7 @@ p.bkt.temp.wi.x <- pred5 %>%
        fill = "CI") 
 
 p.bnt.temp.wi.x <- pred6 %>% 
-  ggplot(aes(x = mean.tmax_winter, y = .epred * 1.609, 
+  ggplot(aes(x = mean.tmax_winter, y = .epred/1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Reds") +
@@ -321,7 +321,7 @@ pred8 <- bnt.mod %>%
     latitude_f, "-1" = "South WI", "0.5" = "Mid WI", "1.5" = "North WI"))
 
 p.bkt.temp.sp.x <- pred7 %>% 
-  ggplot(aes(x = mean.tmax_spring, y = .epred * 1.609, 
+  ggplot(aes(x = mean.tmax_spring, y = .epred/1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Reds") +
@@ -331,7 +331,7 @@ p.bkt.temp.sp.x <- pred7 %>%
        fill = "CI") 
 
 p.bnt.temp.sp.x <- pred8 %>% 
-  ggplot(aes(x = mean.tmax_spring, y = .epred * 1.609, 
+  ggplot(aes(x = mean.tmax_spring, y = .epred/1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Reds") +
@@ -405,7 +405,7 @@ pred10 <- bnt.mod %>%
     latitude_f, "-1" = "South WI", "0.5" = "Mid WI", "1.5" = "North WI"))
 
 p.bkt.rain.su.x <- pred9 %>% 
-  ggplot(aes(x = total.prcp_summer, y = .epred * 1.609, 
+  ggplot(aes(x = total.prcp_summer, y = .epred/1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Blues") +
@@ -415,7 +415,7 @@ p.bkt.rain.su.x <- pred9 %>%
        fill = "CI") 
 
 p.bnt.rain.su.x <- pred10 %>% 
-  ggplot(aes(x = total.prcp_summer, y = .epred * 1.609, 
+  ggplot(aes(x = total.prcp_summer, y = .epred/1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Blues") +
@@ -488,7 +488,7 @@ pred12 <- bnt.mod %>%
     latitude_f, "-1" = "South WI", "0.5" = "Mid WI", "1.5" = "North WI"))
 
 p.bkt.rain.au.x <- pred11 %>% 
-  ggplot(aes(x = total.prcp_autumn, y = .epred * 1.609, 
+  ggplot(aes(x = total.prcp_autumn, y = .epred/1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Blues") +
@@ -498,7 +498,7 @@ p.bkt.rain.au.x <- pred11 %>%
        fill = "CI") 
 
 p.bnt.rain.au.x <- pred12 %>% 
-  ggplot(aes(x = total.prcp_autumn, y = .epred * 1.609, 
+  ggplot(aes(x = total.prcp_autumn, y = .epred/1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Blues") +
@@ -569,7 +569,7 @@ pred14 <- bnt.mod %>%
     latitude_f, "-1" = "South WI", "0.5" = "Mid WI", "1.5" = "North WI"))
 
 p.bkt.rain.wi.x <- pred13 %>%
-  ggplot(aes(x = total.prcp_winter, y = .epred * 1.609,
+  ggplot(aes(x = total.prcp_winter, y = .epred/1.609,
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Blues") +
@@ -579,7 +579,7 @@ p.bkt.rain.wi.x <- pred13 %>%
        fill = "CI") 
 
 p.bnt.rain.wi.x <- pred14 %>%
-  ggplot(aes(x = total.prcp_winter, y = .epred * 1.609,
+  ggplot(aes(x = total.prcp_winter, y = .epred/1.609,
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Blues") +
@@ -640,7 +640,7 @@ pred16 <- bnt.mod %>%
     latitude_f, "-1" = "South WI", "0.5" = "Mid WI", "1.5" = "North WI"))
 
 p.bkt.rain.sp.x <- pred15 %>% 
-  ggplot(aes(x = total.prcp_spring, y = .epred * 1.609, 
+  ggplot(aes(x = total.prcp_spring, y = .epred/1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Blues") +
@@ -650,7 +650,7 @@ p.bkt.rain.sp.x <- pred15 %>%
        fill = "CI")
 
 p.bnt.rain.sp.x <- pred16 %>% 
-  ggplot(aes(x = total.prcp_spring, y = .epred * 1.609, 
+  ggplot(aes(x = total.prcp_spring, y = .epred/1.609, 
              group = latitude_f)) +
   stat_lineribbon(.width = c(0.5, 0.8)) + 
   scale_fill_brewer(palette = "Blues") +
@@ -699,7 +699,7 @@ p.temp.x <-
   )
 
 # save plot
-path <- here::here("output","figs1","fig4_temp_panel")
+path <- here::here("output","figs1","fig4_temp_panel_km")
 ggsave(
   glue::glue("{path}.pdf"), 
   plot = p.temp.x, 
@@ -707,6 +707,7 @@ ggsave(
   height = 12, 
   device = cairo_pdf
 )
+
 # manually add panel letters then covert 
 pdftools::pdf_convert(
   pdf = glue::glue("{path}.pdf"),
@@ -760,7 +761,7 @@ p.rain.x <-
 
 
 # save plot
-path <- here::here("output","figs1","fig5_rain_panel")
+path <- here::here("output","figs1","fig5_rain_panel_km")
 ggsave(
   glue::glue("{path}.pdf"), 
   plot = p.rain.x, 
@@ -768,6 +769,7 @@ ggsave(
   height = 12, 
   device = cairo_pdf
 )
+
 # manually add fish images then covert 
 pdftools::pdf_convert(
   pdf = glue::glue("{path}.pdf"),

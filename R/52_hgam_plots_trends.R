@@ -38,8 +38,8 @@ plot_titles <- c(
 
 
 p.pred.trends <- p.data %>% 
-  ggplot(aes(x = year, y = exp(fit)  * 1.609)) +
-  geom_ribbon(aes(ymin = exp(lower) * 1.609, ymax = exp(upper) * 1.609, 
+  ggplot(aes(x = year, y = exp(fit)  / 1.609)) +
+  geom_ribbon(aes(ymin = exp(lower) / 1.609, ymax = exp(upper) / 1.609, 
                   x = year, 
                   fill = age), 
               alpha = 0.5, inherit.aes = FALSE) +
@@ -48,7 +48,7 @@ p.pred.trends <- p.data %>%
     vars(group), nrow = 2, scales="free", 
     labeller = as_labeller(plot_titles)) +
   scale_x_continuous(breaks = seq(1995,2020,5), limits = c(1994, 2020))+ 
-  scale_y_continuous(limits = c(0,650)) +
+  scale_y_continuous(limits = c(0,250)) +
   scale_linetype_manual(values = c("solid", "solid")) + 
   scale_color_manual(values = c("forestgreen", "black")) +
   scale_fill_manual(values = c("forestgreen", "grey80")) +
@@ -83,7 +83,7 @@ p.pred.trends
 #        device=cairo_pdf, height = 6, width = 9)
 
 
-path <- here::here("output", "figs1", "fig2_trend_panel")
+path <- here::here("output", "figs1", "fig2_trend_panel_km")
 ggsave(glue::glue("{path}.pdf"), plot = p.pred.trends, 
        width = 9, height = 6, device = cairo_pdf)
 pdftools::pdf_convert(pdf = glue::glue("{path}.pdf"),
